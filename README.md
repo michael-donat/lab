@@ -1,4 +1,4 @@
-> for Ubuntu 22.04 (Jammy Jellyfish) 
+This has been ran on VM with at least 2cores and Ubuntu Server 22.04 (Jammy Jellyfish) 
 
 ### Provisioning k8s-master
 
@@ -78,4 +78,21 @@ sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config
 systemctl restart containerd
 systemctl enable containerd
 systemctl status containerd
+```
+
+6. Kubernetes
+
+```bash
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+apt-add-repository -y "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+```
+
+```bash
+apt update
+apt install -y kubelet kubeadm kubectl
+apt-mark hold kubelet kubeadm kubectl
+```
+
+```bash
+kubeadm init --control-plane-endpoint=k8s-master.lab.donat.im
 ```
