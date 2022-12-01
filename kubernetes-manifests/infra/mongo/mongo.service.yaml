@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-headless
+  namespace: infra
+  labels:
+    name: mongo-headless
+spec:
+  ports:
+    - port: 27017
+      targetPort: 27017
+  clusterIP: None
+  selector:
+    name: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-external
+  namespace: infra
+  labels:
+    name: mongo-external
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: mongo.lab.donat.im
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 27017
+      targetPort: 27017
+  selector:
+    name: mongo

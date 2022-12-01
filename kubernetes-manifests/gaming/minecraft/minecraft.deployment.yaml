@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft-server
+  namespace: "gaming"
+  labels:
+    app: minecraft-server
+spec:
+  strategy:
+    type: Recreate
+  replicas: 0
+  selector:
+    matchLabels:
+      name: minecraft-server
+  template:
+    metadata:
+      labels:
+        name: minecraft-server
+    spec:
+      volumes:
+        - name: minecraft-storage
+          hostPath:
+            path: /kubernetes-volumes/minecraft-storage
+      containers:
+        - name: minecraft-server
+          image: itzg/minecraft-server:2022.14.0
+          resources:
+            limits:
+              cpu: "4000m"
+              memory: 4G
+            requests:
+              cpu: "1000m"
+              memory: 2G
+          env:
+            - name:  EULA
+              value: 'TRUE'
+            - name: MODE
+              value: "survival"
+            - name: MOTD
+              value: "K8S Minecraft"
+            - name: SERVER_NAME
+              value: "K8S Minecraft"
+            - name: PVP
+              value: "false"
+            - name: INIT_MEMORY
+              value: 2G
+            - name: MAX_MEMORY
+              value: 4G
+            - name: JVM_XX_OPTS
+              value: "-XX:MaxRAMPercentage=75"
+            - name: OVERRIDE_SERVER_PROPERTIES
+              value: "true"
+            - name: "SEED"
+              value: "-5364873951303559282"
+            - name: SPAWN_PROTECTION
+              value: "0"
+          ports:
+            - containerPort: 25565
+              name: minecraft
+          volumeMounts:
+            - name: minecraft-storage
+              mountPath:  /data
+          readinessProbe:
+            exec:
+              command:
+                - mcstatus
+                - 127.0.0.1
+                - ping
+            initialDelaySeconds: 80
+            periodSeconds: 60
+          livenessProbe:
+            exec:
+              command:
+                - mcstatus
+                - 127.0.0.1
+                - ping
+            initialDelaySeconds: 60
+            periodSeconds: 60
+---

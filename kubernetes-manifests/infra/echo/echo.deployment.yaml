@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo
+  namespace: infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: echo
+  template:
+    metadata:
+      labels:
+        name: echo
+    spec:
+      containers:
+        - image: ealen/echo-server
+          imagePullPolicy: Always
+          name: echo
+          env:
+            - name: PORT
+              value: "8080"
+          ports:
+            - name: http
+              containerPort: 8080

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: shell
+  namespace: infra
+spec:
+    containers:
+      - image: praqma/network-multitool
+        imagePullPolicy: Always
+        name: shell
+
