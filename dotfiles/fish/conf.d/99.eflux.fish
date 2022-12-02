@@ -40,3 +40,19 @@ function eweb
 end
 
 cd /Users/mikey/Development/e-flux
+
+set -xg MONGO_URI mongodb://$MONGO_HOST/eflux_production
+set -xg MONGO_OCPP_URI mongodb://$MONGO_HOST/eflux_ocpp_production
+
+
+function show_config
+    kcl
+    echo "Mongo configuration"
+    echo
+
+    printf '%20s => %s\n' MONGO_HOST $MONGO_HOST
+    printf '%20s => %s\n' MONGO_URI $MONGO_URI
+    printf '%20s => %s\n' MONGO_OCPP_URI $MONGO_OCPP_URI
+
+    echo
+end
