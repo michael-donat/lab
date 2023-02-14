@@ -1,9 +1,14 @@
-function docker_remote
-	set -gx DOCKER_HOST tcp://ubuntu.lab.donat.im:2375
+function docker_lab
+	set -gx DOCKER_CONTEXT lab
 end
 
 function docker_local
-	set -ge  DOCKER_HOST
+	set -gx DOCKER_CONTEXT mac
 end
 
-docker_remote
+docker_lab
+
+function docker_context_setup
+    docker context create lab --docker host=tcp://ubuntu.lab.donat.im:2375
+    docker context create mac --docker host="unix:///Users/mikey/.docker/run/docker.sock"
+end
