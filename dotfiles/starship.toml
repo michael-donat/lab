@@ -87,8 +87,27 @@ success_symbol = "[➜](bold green)" # The "success_symbol" segment is being set
 disabled = true
 
 [kubernetes]
-format = 'on [⛵ $context \($namespace\)](dimmed green) '
+format = '[k8s\($context::$namespace\)](bold green) '
 disabled = false
 [kubernetes.context_aliases]
-"gke_eflux-(?P<env>[a-z]+)_us-east1-c_standard-cluster-1" = "eflux@$env"
+"gke_eflux-(?P<env>[a-z]+)_us-east1-c_standard-cluster-1" = "$env-us"
+"gke_eflux-(?P<env>[a-z]+)_europe-west3_platform" = "$env-eu"
 "kubernetes-admin@kubernetes" = "k8s@home"
+
+[gcloud]
+format = '[gcp\($project\)]($style)'
+symbol = 'gcp:'
+
+[nodejs]
+disabled = true
+
+[docker_context]
+format = '[docker\($context\)]($style) '
+only_with_files = false
+
+[git_commit]
+commit_hash_length = 7
+only_detached = false
+
+[directory]
+use_logical_path = false
