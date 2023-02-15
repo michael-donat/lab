@@ -4,4 +4,7 @@ namespace: gaming
 resources:
   - minecraft.deployment.yaml
   - minecraft.service.yaml
-
+configMapGenerator:
+  - name: extras
+    files:
+      - minecraft.mods.txt

@@ -4,12 +4,18 @@ metadata:
   name: minecraft-server
   namespace: "gaming"
   labels:
-    app: minecraft-server
+    name: minecraft-server
   annotations:
     external-dns.alpha.kubernetes.io/hostname: minecraft.lab.donat.im
 spec:
   type: LoadBalancer
   ports:
-    - port: 25565
+    - name: minecraft
+      port: 25565
+    - name: qcon
+      port: 25575
+    - name: map
+      port: 80
+      targetPort: 8080
   selector:
-    app: minecraft-server
+    name: minecraft-server

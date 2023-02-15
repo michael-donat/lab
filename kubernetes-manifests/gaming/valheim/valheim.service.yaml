@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: valheim-server
+  namespace: "gaming"
+  labels:
+    name: valheim-server
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: valheim.lab.donat.im
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 2456
+      name: clients
+      protocol: UDP
+    - port: 2457
+      name: queries
+      protocol: UDP
+    - port: 9001
+      name: supervisor
+  selector:
+    name: valheim-server

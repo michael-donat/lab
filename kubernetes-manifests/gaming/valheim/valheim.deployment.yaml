@@ -1,0 +1,63 @@
+---
+# Source: valheim-k8s/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: valheim-server
+  namespace: "gaming"
+  labels:
+    app: valheim-server
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      name: valheim-server
+  template:
+    metadata:
+      name: valheim-server
+      namespace: gaming
+      labels:
+        name: valheim-server
+    spec:
+      containers:
+        - image: "lloesche/valheim-server:latest"
+          name: valheim-server
+          env:
+            - name: SERVER_NAME
+              value: K8S-Valheim-Server
+            - name: WORLD_NAME
+              value: ForGabsAndDads
+            - name: SERVER_PASS
+              value: "123123"
+            - name: SERVER_PORT
+              value: "2456"
+            - name: SUPERVISOR_HTTP
+              value: "true"
+          ports:
+            - containerPort: 2456
+              name: gameport
+            - containerPort: 9001
+              name: supervisor
+            - containerPort: 2457
+              name: queryport
+          resources:
+            limits:
+              cpu: "4000m"
+              memory: 4G
+            requests:
+              cpu: "1000m"
+              memory: 2G
+          volumeMounts:
+            - mountPath: /config
+              name: valheim-storage-data
+            - mountPath: /opt/valheim
+              name: valheim-storage-server
+      volumes:
+        - name: valheim-storage-server
+          hostPath:
+            path: /kubernetes-volumes/valheim-storage/server
+        - name: valheim-storage-data
+          hostPath:
+            path: /kubernetes-volumes/valheim-storage/data
