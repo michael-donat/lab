@@ -7,12 +7,15 @@ set -a K8S_CONTEXT_ID gke_eflux-staging_us-east1-c_standard-cluster-1
 set -a K8S_CONTEXT_ALIAS prod
 set -a K8S_CONTEXT_ID gke_eflux-production_us-east1-c_standard-cluster-1
 
+set -a K8S_CONTEXT_ALIAS eustage
+set -a K8S_CONTEXT_ID gke_eflux-staging_europe-west3_platform
+
 function stage_mngo
-    k port-forward --context=gke_eflux-staging_us-east1-c_standard-cluster-1 --namespace=default svc/mongo 27117:27017
+    k port-forward --context=gke_eflux-staging_us-east1-c_standard-cluster-1 --namespace=infra svc/mongo 27117:27017
 end
 
 function prod_mngo
-    k port-forward --context=gke_eflux-production_us-east1-c_standard-cluster-1 --namespace=default svc/mongo 27217:27017
+    k port-forward --context=gke_eflux-production_us-east1-c_standard-cluster-1 --namespace=infra svc/mongo 27217:27017
 end
 
 function mirror_mngo
@@ -34,9 +37,14 @@ function eapi
 end
 
 function eweb
-	/Users/mikey/Development/e-flux/e-flux/services/web
+	cd /Users/mikey/Development/e-flux/e-flux/services/web
 	yarn install
 	yarn start
+end
+
+function ekube
+	cd /Users/mikey/Development/e-flux/e-flux/deployment/environments/production
+	kc prod
 end
 
 cd /Users/mikey/Development/e-flux
