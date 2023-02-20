@@ -1,17 +1,20 @@
 set -a K8S_CONTEXT_ALIAS staging
-set -a K8S_CONTEXT_ID gke_eflux-staging_us-east1-c_standard-cluster-1
+set -a K8S_CONTEXT_ID gke_eflux-staging_europe-west3_platform
 
-set -a K8S_CONTEXT_ALIAS stage
+set -a K8S_CONTEXT_ALIAS usstage
 set -a K8S_CONTEXT_ID gke_eflux-staging_us-east1-c_standard-cluster-1
 
 set -a K8S_CONTEXT_ALIAS prod
 set -a K8S_CONTEXT_ID gke_eflux-production_us-east1-c_standard-cluster-1
 
-set -a K8S_CONTEXT_ALIAS eustage
+set -a K8S_CONTEXT_ALIAS stage
 set -a K8S_CONTEXT_ID gke_eflux-staging_europe-west3_platform
 
+set -a K8S_CONTEXT_ALIAS euprod
+set -a K8S_CONTEXT_ID gke_eflux-production_europe-west3_platform
+
 function stage_mngo
-    k port-forward --context=gke_eflux-staging_us-east1-c_standard-cluster-1 --namespace=infra svc/mongo 27117:27017
+    k port-forward --context=gke_eflux-staging_europe-west3_platform --namespace=infra svc/mongo 27117:27017
 end
 
 function prod_mngo

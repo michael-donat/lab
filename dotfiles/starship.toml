@@ -57,6 +57,7 @@ $nix_shell\
 $conda\
 $spack\
 $memory_usage\
+${custom.production_check}\
 $kubernetes\
 $aws\
 $gcloud\
@@ -64,7 +65,6 @@ $openstack\
 $azure\
 $env_var\
 $crystal\
-$custom\
 $sudo\
 $cmd_duration\
 $line_break\
@@ -111,3 +111,11 @@ only_detached = false
 
 [directory]
 use_logical_path = false
+
+[custom.production_check]
+description = "Check if current kubernetes context contains production."
+command = 'cat ~/.kube/config | rg current-context | rg production > /dev/null && echo "prod->"'
+symbol      = ""
+format      = "[$output]($style)"
+style       = "red bold blink"
+when        = "true"
