@@ -22,6 +22,7 @@ configMapGenerator:
       - MAX_TICK_TIME=-1
       - ENABLE_AUTOPAUSE=TRUE
       - GUI=FALSE
+      - OPS=6f773c39-9910-4cf7-aaeb-7d50cfa21d0e,dc0ed078-8692-4fc0-9bb7-37fdc620dc8d
 
 images:
   - name: itzg/minecraft-server
