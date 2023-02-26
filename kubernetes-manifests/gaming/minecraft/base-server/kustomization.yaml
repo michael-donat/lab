@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: gaming
+resources:
+  - minecraft.deployment.yaml
+  - minecraft.service.yaml
+
+configMapGenerator:
+  - name: minecraft-base-config
+    literals:
+      - REMOVE_OLD_MODS=TRUE
+      - MODS_FILE=/extras/minecraft.mods.txt
+      - EULA=TRUE
+      - MOTD="K8S Minecraft"
+      - SERVER_NAME="K8S Minecraft"
+      - PVP="false"
+      - INIT_MEMORY=4G
+      - MAX_MEMORY=12G
+      - JVM_XX_OPTS="-Xms1G -Xmx12G -XX:+UseG1GC"
+      - OVERRIDE_SERVER_PROPERTIES="true"
+      - SPAWN_PROTECTION="0"
+      - MAX_TICK_TIME=-1
+      - ENABLE_AUTOPAUSE=TRUE
+      - GUI=FALSE
+
+images:
+  - name: itzg/minecraft-server
+    newName: itzg/minecraft-server
+    newTag: 2022.16.0
+

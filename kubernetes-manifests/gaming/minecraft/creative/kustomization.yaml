@@ -1,0 +1,37 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: gaming
+nameSuffix: -creative
+resources:
+  - ../base-server
+
+commonLabels:
+  name: minecraft-server-creative
+
+commonAnnotations:
+  "mc-router.itzg.me/externalServerName": "creative.ms.lab.donat.im"
+
+configMapGenerator:
+  - name: minecraft-world-config
+    literals:
+      - REMOVE_OLD_MODS=TRUE
+      - MODE=creative
+      - MOTD=Creative, what will you imagine?
+      - SERVER_NAME=Donattos Creative
+
+patches:
+  - target:
+      kind: Deployment
+      name: minecraft-server
+    patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: minecraft-server
+      spec:
+        template:
+          spec:
+            volumes:
+              - hostPath:
+                  path: /kubernetes-volumes/minecraft-storage/creative
+                name: minecraft-storage

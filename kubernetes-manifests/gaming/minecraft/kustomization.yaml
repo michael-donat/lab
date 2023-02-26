@@ -2,9 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: gaming
 resources:
-  - minecraft.deployment.yaml
-  - minecraft.service.yaml
-configMapGenerator:
-  - name: extras
-    files:
-      - minecraft.mods.txt
+  - survival
+  - creative
+  - router

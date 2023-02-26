@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft-server
+  namespace: "gaming"
+spec:
+  selector:
+    matchLabels:
+      name:
+  strategy:
+    type: Recreate
+  replicas: 1
+  template:
+    spec:
+      volumes:
+        - name: extras
+          configMap:
+            name: extras
+      containers:
+        - name: minecraft-server
+          image: itzg/minecraft-server:2022.16.0
+          envFrom:
+            - configMapRef:
+                name: minecraft-base-config
+            - configMapRef:
+                name: minecraft-world-config
+          resources:
+            limits:
+              cpu: "8000m"
+              memory: 12G
+            requests:
+              cpu: "1000m"
+              memory: 2G
+          ports:
+            - containerPort: 25565
+              name: minecraft
+            - containerPort: 25575
+              name: qcon
+            - containerPort: 8080
+              name: map
+          volumeMounts:
+            - name: minecraft-storage
+              mountPath:  /data
+            - name: extras
+              mountPath: /extras
+          readinessProbe:
+            exec:
+              command:
+                - mc-health
+            initialDelaySeconds: 10
+            failureThreshold: 12
+            periodSeconds: 5
+          livenessProbe:
+            exec:
+              command:
+                - mc-health
+            initialDelaySeconds: 20
+            failureThreshold: 5
+            periodSeconds: 5
+---
