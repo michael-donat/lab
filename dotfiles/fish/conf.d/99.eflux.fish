@@ -13,16 +13,31 @@ set -a K8S_CONTEXT_ID gke_eflux-staging_europe-west3_platform
 set -a K8S_CONTEXT_ALIAS euprod
 set -a K8S_CONTEXT_ID gke_eflux-production_europe-west3_platform
 
+set -a GCLOUD_CONFIGURATION_ALIAS staging
+set -a GCLOUD_CONFIGURATION_ID staging
+
+set -a GCLOUD_CONFIGURATION_ALIAS stage
+set -a GCLOUD_CONFIGURATION_ID staging
+
+set -a GCLOUD_CONFIGURATION_ALIAS production
+set -a GCLOUD_CONFIGURATION_ID production
+
+set -a GCLOUD_CONFIGURATION_ALIAS prod
+set -a GCLOUD_CONFIGURATION_ID production
+
+set -a GCLOUD_CONFIGURATION_ALIAS usprod
+set -a GCLOUD_CONFIGURATION_ID usproduction
+
 function stage_mngo
     k port-forward --context=gke_eflux-staging_europe-west3_platform --namespace=infra svc/mongo 27117:27017
 end
 
 function prod_mngo
-    k port-forward --context=gke_eflux-production_us-east1-c_standard-cluster-1 --namespace=infra svc/mongo 27217:27017
+    k port-forward --context=gke_eflux-production_europe-west3_platform --namespace=infra svc/mongo 27217:27017
 end
 
 function mirror_mngo
-    k port-forward --context=gke_eflux-production_us-east1-c_standard-cluster-1 --namespace=tools svc/mongo-for-mirror 27317:27017
+    k port-forward --context=gke_eflux-production_europe-west3_platform --namespace=tools svc/mongo-for-mirror 27317:27017
 end
 
 function prod_switch
