@@ -4,13 +4,13 @@ set -a K8S_CONTEXT_ID gke_eflux-staging_europe-west3_platform
 set -a K8S_CONTEXT_ALIAS usstage
 set -a K8S_CONTEXT_ID gke_eflux-staging_us-east1-c_standard-cluster-1
 
-set -a K8S_CONTEXT_ALIAS prod
+set -a K8S_CONTEXT_ALIAS usprod
 set -a K8S_CONTEXT_ID gke_eflux-production_us-east1-c_standard-cluster-1
 
 set -a K8S_CONTEXT_ALIAS stage
 set -a K8S_CONTEXT_ID gke_eflux-staging_europe-west3_platform
 
-set -a K8S_CONTEXT_ALIAS euprod
+set -a K8S_CONTEXT_ALIAS prod
 set -a K8S_CONTEXT_ID gke_eflux-production_europe-west3_platform
 
 set -a GCLOUD_CONFIGURATION_ALIAS staging
@@ -67,9 +67,17 @@ end
 
 cd /Users/mikey/Development/e-flux
 
-set -xg MONGO_URI mongodb://$MONGO_HOST/eflux_production
-set -xg MONGO_OCPP_URI mongodb://$MONGO_HOST/eflux_ocpp_production
+function setmongoenv
+	set -xg MONGO_URI mongodb://$MONGO_HOST/eflux_production
+	set -xg MONGO_OCPP_URI mongodb://$MONGO_HOST/eflux_ocpp_production
+end
 
+function mongodocker
+	set -xg MONGO_HOST ubuntu.lab.donat.im
+	setmongoenv
+end
+
+setmongoenv
 
 function show_config
     kcl

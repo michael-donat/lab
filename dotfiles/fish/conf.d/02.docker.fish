@@ -1,14 +1,51 @@
-function docker_lab
-	set -gx DOCKER_CONTEXT lab
+set -a DOCKER_CONTEXT_ALIAS lab
+set -a DOCKER_CONTEXT_ENDPOINT tcp://ubuntu.lab.donat.im:2375
+
+set -a DOCKER_CONTEXT_ALIAS mac
+set -a DOCKER_CONTEXT_ENDPOINT unix:///Users/mikey/.docker/run/docker.sock
+
+function dinit
+    for i in (seq (count $DOCKER_CONTEXT_ALIAS))
+        docker context create $DOCKER_CONTEXT_ALIAS[$i] --docker host="$DOCKER_CONTEXT_ENDPOINT[$i]"
+    end
 end
 
-function docker_local
-	set -gx DOCKER_CONTEXT mac
+function dls
+        echo
+        echo "Available contexts aliases for docker:"
+        echo
+    for i in (seq (count $DOCKER_CONTEXT_ALIAS))
+        printf '%20s => %s\n' $DOCKER_CONTEXT_ALIAS[$i] $DOCKER_CONTEXT_ENDPOINT[$i]
+    end
+        echo
+        echo "Available contexts:"
+        echo
+        docker context ls
+    echo
 end
 
-docker_lab
+function dc
+    for i in (seq (count $DOCKER_CONTEXT_ALIAS))
+        if test "$argv[1]" = "$DOCKER_CONTEXT_ALIAS[$i]"
+          set ENDPOINT $DOCKER_CONTEXT_ENDPOINT[$i]
+          set CONTEXT $DOCKER_CONTEXT_ALIAS[$i]
+          break
+        end
+        if test "$argv[1]" = "$DOCKER_CONTEXT_ENDPOINT[$i]"
+          set ENDPOINT $DOCKER_CONTEXT_ENDPOINT[$i]
+          set CONTEXT $DOCKER_CONTEXT_ALIAS[$i]
+          break
+        end
+    end
 
-function docker_context_setup
-    docker context create lab --docker host=tcp://ubuntu.lab.donat.im:2375
-    docker context create mac --docker host="unix:///Users/mikey/.docker/run/docker.sock"
+    if not set -q ENDPOINT
+        echo "Unknown context alias '$argv[1]'"
+        return 1
+    end
+
+     docker context use $CONTEXT &> /dev/null
+     set -xg DOCKER_HOST $ENDPOINT
+     set -xg DOCKER_CONTEXT $CONTEXT
 end
+
+dc lab
