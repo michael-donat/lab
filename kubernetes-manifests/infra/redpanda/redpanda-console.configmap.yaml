@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redpanda-console
+data:
+  config.yaml: |
+    kafka:
+      brokers: ["redpanda:9092"]
+      schemaRegistry:
+        enabled: false
+        urls: ["http://redpanda:9081"]
+    redpanda:
+      adminApi:
+        enabled: true
+        urls: ["http://redpanda:9644"]

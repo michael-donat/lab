@@ -4,6 +4,9 @@ set -a DOCKER_CONTEXT_ENDPOINT tcp://ubuntu.lab.donat.im:2375
 set -a DOCKER_CONTEXT_ALIAS mac
 set -a DOCKER_CONTEXT_ENDPOINT unix:///Users/mikey/.docker/run/docker.sock
 
+set -a DOCKER_CONTEXT_ALIAS colima
+set -a DOCKER_CONTEXT_ENDPOINT unix:///Users/mikey/.colima/default/docker.sock
+
 function dinit
     for i in (seq (count $DOCKER_CONTEXT_ALIAS))
         docker context create $DOCKER_CONTEXT_ALIAS[$i] --docker host="$DOCKER_CONTEXT_ENDPOINT[$i]"
@@ -48,4 +51,4 @@ function dc
      set -xg DOCKER_CONTEXT $CONTEXT
 end
 
-dc lab
+dc colima

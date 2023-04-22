@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redpanda-console
+  namespace: infra
+  labels:
+    name: redpanda-console
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: redpanda.lab.donat.im
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    name: redpanda-console
