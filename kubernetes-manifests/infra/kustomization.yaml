@@ -6,5 +6,6 @@ resources:
   - echo
   - mongo
   - external-dns
+  - ddns
   - elasticsearch
   - redpanda

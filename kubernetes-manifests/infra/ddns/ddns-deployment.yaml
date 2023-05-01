@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ddns
+  namespace: infra
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ddns
+  template:
+    metadata:
+      labels:
+        app: ddns
+    spec:
+      containers:
+        - name: ddns
+          image: oznu/cloudflare-ddns
+          env:
+            - name: CRON
+              value: "@hourly"
+            - name: ZONE
+              value: donat.im
+            - name: SUBDOMAIN
+              value: wan
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: cf-token
+                  name: cloudflare-credential-kk62tt79dh
