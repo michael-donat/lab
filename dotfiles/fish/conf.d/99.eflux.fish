@@ -77,6 +77,11 @@ function mongodocker
 	setmongoenv
 end
 
+function mongolocal
+        set -xg MONGO_HOST 0.0.0.0
+        setmongoenv
+end
+
 setmongoenv
 
 function show_config
