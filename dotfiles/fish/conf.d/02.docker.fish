@@ -48,7 +48,7 @@ function dc
 
      docker context use $CONTEXT &> /dev/null
      set -xg DOCKER_HOST $ENDPOINT
-     set -xg DOCKER_CONTEXT $CONTEXT
+#     set -xg DOCKER_CONTEXT $CONTEXT
 end
 
-dc colima
+dc lab
