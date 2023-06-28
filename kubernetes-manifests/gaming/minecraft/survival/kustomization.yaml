@@ -17,7 +17,7 @@ configMapGenerator:
       - minecraft.mods.txt
   - name: minecraft-world-config
     literals:
-      - TYPE=FORGE
+      #- TYPE=FORGE
       - REMOVE_OLD_MODS=TRUE
       - MODE=survival
       - MOTD=Surive, will you?

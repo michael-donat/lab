@@ -14,15 +14,14 @@ configMapGenerator:
       - MOTD="K8S Minecraft"
       - SERVER_NAME="K8S Minecraft"
       - PVP="false"
-      - INIT_MEMORY=4G
-      - MAX_MEMORY=12G
-      - JVM_XX_OPTS="-Xms1G -Xmx12G -XX:+UseG1GC"
+      - MEMORY=""
+      - JVM_XX_OPTS="-XX:MaxRAMPercentage=80"
       - OVERRIDE_SERVER_PROPERTIES="true"
       - SPAWN_PROTECTION="0"
       - MAX_TICK_TIME=-1
       - ENABLE_AUTOPAUSE=TRUE
       - GUI=FALSE
-      - VERSION=LATEST
+      - VERSION=1.20.1
       - OPS=6f773c39-9910-4cf7-aaeb-7d50cfa21d0e,dc0ed078-8692-4fc0-9bb7-37fdc620dc8d
 
 images:

@@ -14,3 +14,4 @@
 - 10.0.20.58 - Tablet Kitchen
 - 10.0.20.60 - Shelly Light Kitchen Cabinets
 - 10.0.20.61 - Shelly Light Office LED
+- 10.0.20.62 - Shelly Light Office Wall Light
