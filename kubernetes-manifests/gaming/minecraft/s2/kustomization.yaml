@@ -1,27 +1,28 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: gaming
-nameSuffix: -creative
+nameSuffix: -s2
 resources:
   - ../base-server
 
 commonLabels:
-  name: minecraft-server-creative
+  name: minecraft-server-s2
 
 commonAnnotations:
-  "mc-router.itzg.me/externalServerName": "creative.ms.lab.donat.im"
+  "mc-router.itzg.me/externalServerName": "s2.ms.lab.donat.im"
 
 configMapGenerator:
   - name: extras
     files:
       - minecraft.mods.txt
-
   - name: minecraft-world-config
     literals:
+      #- TYPE=FORGE
       - REMOVE_OLD_MODS=TRUE
-      - MODE=creative
-      - MOTD=Creative, what will you imagine?
-      - SERVER_NAME=Donattos Creative
+      - MODE=survival
+      - MOTD=Surviva - 1.20
+      - SERVER_NAME=Survival 1.20
+      - SEED=6280664519483202849
 
 patches:
   - target:
@@ -37,5 +38,5 @@ patches:
           spec:
             volumes:
               - hostPath:
-                  path: /kubernetes-volumes/minecraft-storage/creative
+                  path: /kubernetes-volumes/minecraft-storage/s2
                 name: minecraft-storage

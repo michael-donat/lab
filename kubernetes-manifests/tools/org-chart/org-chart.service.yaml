@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: org-chart
+  namespace: infra
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: org-chart.lab.donat.im
+spec:
+  type: LoadBalancer
+  selector:
+    name: org-chart
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80

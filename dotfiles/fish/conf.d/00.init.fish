@@ -5,3 +5,5 @@ function e
     kc $argv[1]
     gc $argv[1]
 end
+
+source "$(brew --prefix)/share/google-cloud-sdk/path.fish.inc"

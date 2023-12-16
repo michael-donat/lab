@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: org-chart
+  namespace: infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: org-chart
+  template:
+    metadata:
+      labels:
+        name: org-chart
+    spec:
+      containers:
+        - image: michaeldonat/org-chart-web
+          imagePullPolicy: Always
+          name: org-chart
+          env:
+            - name: PORT
+              value: "80"
+          ports:
+            - name: http
+              containerPort: 80
+        - image: michaeldonat/org-chart-mongo-storage
+          imagePullPolicy: Always
+          name: org-chart-mongo-storage
+          env:
+            - name: MONGO_HOST
+              value: mongo.infra
+          ports:
+            - name: api
+              containerPort: 4000
