@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: plex
+  name: plex
+  namespace: home
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: plex.lab.donat.im
+spec:
+  type: LoadBalancer
+  ports:
+    - name: "plex"
+      port: 32400
+      targetPort: 32400
+  selector:
+    app: plex
