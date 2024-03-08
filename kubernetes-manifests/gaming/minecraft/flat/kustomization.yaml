@@ -1,0 +1,45 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: gaming
+nameSuffix: -flat
+resources:
+  - ../base-server
+
+commonLabels:
+  name: minecraft-server-flat
+
+commonAnnotations:
+  "mc-router.itzg.me/externalServerName": "flat.ms.lab.donat.im"
+
+configMapGenerator:
+  - name: extras
+    files:
+      - minecraft.mods.txt
+  - name: minecraft-world-config
+    literals:
+      - REMOVE_OLD_MODS=TRUE
+      - MODE=creative
+      - MOTD=Superflat - 1.20
+      - SERVER_NAME=Superflat 1.20
+      - PVP=false
+      - ALLOW_FLIGHT=TRUE
+      - LEVEL_TYPE=FLAT
+      - GENERATOR_SETTINGS={"layers":[{"block":"minecraft:bedrock","height":1},{"block":"minecraft:stone","height":2},{"block":"minecraft:sandstone","height":15}],"biome":"minecraft:desert"}
+      - OPS=6f773c39-9910-4cf7-aaeb-7d50cfa21d0e,dc0ed078-8692-4fc0-9bb7-37fdc620dc8d,29ba0f77-3c73-426a-8b46-ed47a0f5c808
+
+patches:
+  - target:
+      kind: Deployment
+      name: minecraft-server
+    patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: minecraft-server
+      spec:
+        template:
+          spec:
+            volumes:
+              - hostPath:
+                  path: /kubernetes-volumes/minecraft-storage/flat
+                name: minecraft-storage
