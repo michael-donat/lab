@@ -88,10 +88,11 @@ disabled = true
 [kubernetes]
 format = '[k8s\($context::$namespace\)](bold green) '
 disabled = false
-[kubernetes.context_aliases]
-"gke_eflux-(?P<env>[a-z]+)_us-east1-c_standard-cluster-1" = "$env-us"
-"gke_eflux-(?P<env>[a-z]+)_europe-west3_platform" = "$env-eu"
-"kubernetes-admin@kubernetes" = "k8s@home"
+contexts = [
+{context_pattern = "gke_eflux-(?P<env>[a-z]+)_europe-west3_platform", context_alias = "$env-eu"},
+]
+
+#"kubernetes-admin@kubernetes" = "k8s@home"
 
 [gcloud]
 format = '[gcp\($project\)]($style)'
