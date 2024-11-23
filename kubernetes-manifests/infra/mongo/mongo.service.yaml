@@ -29,3 +29,17 @@ spec:
       targetPort: 27017
   selector:
     name: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-internal
+  namespace: infra
+  labels:
+    name: mongo-internal
+spec:
+  ports:
+    - port: 27017
+      targetPort: 27017
+  selector:
+    name: mongo

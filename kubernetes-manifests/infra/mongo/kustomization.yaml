@@ -4,3 +4,5 @@ namespace: infra
 resources:
   - mongo.deployment.yaml
   - mongo.service.yaml
+  - mongo-ui.deployment.yaml
+  - mongo-ui.service.yaml
