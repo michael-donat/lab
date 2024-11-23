@@ -114,8 +114,8 @@ use_logical_path = false
 
 [custom.production_check]
 description = "Check if current kubernetes context contains production."
-shell = ["sh", "--norc"]
-command = '/Users/mikey/Development/lab/dotfiles/prodcheck.sh'
+command = 'cat ~/.kube/config | rg current-context | rg production > /dev/null && echo "prod->"'
+shell = ["sh", "-norc"]
 symbol      = ""
 format      = "[$output]($style)"
 style       = "red bold blink"
