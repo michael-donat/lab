@@ -16,16 +16,21 @@ spec:
     spec:
       containers:
         - name: ddns
-          image: oznu/cloudflare-ddns
+          image: favonia/cloudflare-ddns:latest
           env:
-            - name: CRON
-              value: "@hourly"
-            - name: ZONE
-              value: donat.im
-            - name: SUBDOMAIN
-              value: wan
-            - name: API_KEY
+            - name: CF_API_TOKEN
               valueFrom:
                 secretKeyRef:
                   key: cf-token
                   name: cloudflare-credential-kk62tt79dh
+            - name: CLOUDFLARE_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: cf-token
+                  name: cloudflare-credential-kk62tt79dh
+            - name: DOMAINS
+              value: wan.donat.im
+            - name: PROXIED
+              value: "false"
+            - name: IP6_PROVIDER
+              value: none
