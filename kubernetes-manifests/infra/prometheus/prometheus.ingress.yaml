@@ -1,18 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: grafana
+  name: prometheus
   namespace: infra
 spec:
   ingressClassName: traefik
   rules:
-    - host: grafana.lab.donat.im
+    - host: prom.lab.donat.im
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: grafana
+                name: prometheus
                 port:
-                  number: 3000
+                  number: 9090

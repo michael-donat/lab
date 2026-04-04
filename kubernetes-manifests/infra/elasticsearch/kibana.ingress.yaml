@@ -1,18 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: grafana
+  name: kibana
   namespace: infra
 spec:
   ingressClassName: traefik
   rules:
-    - host: grafana.lab.donat.im
+    - host: kibana.lab.donat.im
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: grafana
+                name: kibana
                 port:
-                  number: 3000
+                  number: 5601

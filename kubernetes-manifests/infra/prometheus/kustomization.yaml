@@ -5,6 +5,7 @@ resources:
   - prometheus.configmap.yaml
   - prometheus.deployment.yaml
   - prometheus.service.yaml
+  - prometheus.ingress.yaml
 
 secretGenerator:
   - name: prometheus-ha-token
