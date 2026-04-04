@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik
+  namespace: traefik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: traefik
+  template:
+    metadata:
+      labels:
+        name: traefik
+    spec:
+      serviceAccountName: traefik
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: traefik
+          image: traefik:v3.3
+          args:
+            - --providers.kubernetesingress=true
+            - --providers.kubernetesingress.ingressclass=traefik
+            - --entrypoints.web.address=:80
+            - --api.dashboard=true
+            - --api.insecure=true
+            - --ping=true
+            - --log.level=INFO
+          ports:
+            - name: http
+              containerPort: 80
+            - name: dashboard
+              containerPort: 8080
+          resources:
+            limits:
+              cpu: 200m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 32Mi
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: dashboard
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: dashboard
+            initialDelaySeconds: 10
+            periodSeconds: 15

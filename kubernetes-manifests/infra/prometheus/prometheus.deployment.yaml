@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: infra
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      name: prometheus
+  template:
+    metadata:
+      labels:
+        name: prometheus
+    spec:
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: prometheus-storage
+          hostPath:
+            path: /kubernetes-volumes/prometheus-storage
+        - name: prometheus-config
+          configMap:
+            name: prometheus-config
+        - name: prometheus-ha-token
+          secret:
+            secretName: prometheus-ha-token
+      containers:
+        - name: prometheus
+          image: prom/prometheus:v2.51.2
+          args:
+            - "--config.file=/etc/prometheus/prometheus.yml"
+            - "--storage.tsdb.path=/prometheus"
+            # Retain 30 days of data
+            - "--storage.tsdb.retention.time=180d"
+            # Hard cap at 5GB — prevents runaway disk usage
+            - "--storage.tsdb.retention.size=5GB"
+            # Reduce WAL compression CPU cost
+            - "--storage.tsdb.wal-compression"
+          ports:
+            - name: http
+              containerPort: 9090
+          volumeMounts:
+            - name: prometheus-storage
+              mountPath: /prometheus
+            - name: prometheus-config
+              mountPath: /etc/prometheus
+            - name: prometheus-ha-token
+              mountPath: /etc/prometheus/secrets
+              readOnly: true
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 50m
+              memory: 128Mi
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10

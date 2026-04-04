@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: infra
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: grafana.lab.donat.im
+spec:
+  type: LoadBalancer
+  selector:
+    name: grafana
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http

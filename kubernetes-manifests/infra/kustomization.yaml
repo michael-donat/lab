@@ -8,4 +8,6 @@ resources:
   - external-dns
   - ddns
   - elasticsearch
-  - redpanda
+  #- redpanda
+  - prometheus
+  - grafana

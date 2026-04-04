@@ -2,3 +2,4 @@
 *.secret.*
 .idea
 .DS_Store
+/.claude/worktrees

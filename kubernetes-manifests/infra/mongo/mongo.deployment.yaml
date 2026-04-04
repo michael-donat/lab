@@ -22,7 +22,7 @@ spec:
             path: /kubernetes-volumes/mongo-storage
       containers:
         - name: mongo
-          image: mongo:5
+          image: mongo:7
           command:
             - mongod
             - "--bind_ip_all"
