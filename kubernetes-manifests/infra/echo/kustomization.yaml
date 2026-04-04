@@ -4,4 +4,5 @@ namespace: infra
 resources:
   - echo.deployment.yaml
   - echo.service.yaml
+  - echo.ingress.yaml
 
