@@ -5,3 +5,4 @@ resources:
   - grafana.datasource.configmap.yaml
   - grafana.deployment.yaml
   - grafana.service.yaml
+  - grafana.ingress.yaml
