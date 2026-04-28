@@ -37,6 +37,7 @@ patches:
       metadata:
         name: minecraft-server
       spec:
+        replicas: 0
         template:
           spec:
             volumes:

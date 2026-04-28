@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-headless
+  namespace: infra
+  labels:
+    name: postgres-headless
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+  clusterIP: None
+  selector:
+    name: postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-external
+  namespace: infra
+  labels:
+    name: postgres-external
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: postgres.lab.donat.im
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    name: postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-internal
+  namespace: infra
+  labels:
+    name: postgres-internal
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    name: postgres
+

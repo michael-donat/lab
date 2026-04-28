@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-ui
+  namespace: infra
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      name: postgres-ui
+  template:
+    metadata:
+      labels:
+        name: postgres-ui
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: postgres-ui
+          image: dpage/pgadmin4:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: PGADMIN_DEFAULT_EMAIL
+              value: admin@admin.com
+            - name: PGADMIN_DEFAULT_PASSWORD
+              value: postgres
+            - name: PGADMIN_CONFIG_SERVER_MODE
+              value: "False"
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 50m
+              memory: 200Mi
+
