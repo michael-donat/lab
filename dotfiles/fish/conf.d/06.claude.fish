@@ -1,0 +1,1 @@
+alias cl="cd /Users/mikey/Development/lab && claude ."
