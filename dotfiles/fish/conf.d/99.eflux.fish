@@ -68,7 +68,7 @@ end
 cd /Users/mikey/Development/e-flux
 
 function setmongoenv
-	set -xg MONGO_URI mongodb://$MONGO_HOST/eflux_production
+	set -xg MONGO_URI "mongodb://$MONGO_HOST/eflux_production?replicaSet=api"
 	set -xg MONGO_OCPP_URI mongodb://$MONGO_HOST/eflux_ocpp_production
 end
 
