@@ -5,8 +5,11 @@ nameSuffix: -creative
 resources:
   - ../base-server
 
-commonLabels:
-  name: minecraft-server-creative
+labels:
+  - pairs:
+      name: minecraft-server-creative
+    includeSelectors: true
+    includeTemplates: true
 
 commonAnnotations:
   "mc-router.itzg.me/externalServerName": "creative.ms.lab.donat.im"
@@ -33,6 +36,7 @@ patches:
       metadata:
         name: minecraft-server
       spec:
+        replicas: 0
         template:
           spec:
             volumes:

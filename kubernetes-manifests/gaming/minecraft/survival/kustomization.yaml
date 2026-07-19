@@ -5,8 +5,11 @@ nameSuffix: -survival
 resources:
   - ../base-server
 
-commonLabels:
-  name: minecraft-server-survival
+labels:
+  - pairs:
+      name: minecraft-server-survival
+    includeSelectors: true
+    includeTemplates: true
 
 commonAnnotations:
   "mc-router.itzg.me/externalServerName": "survival.ms.lab.donat.im"
@@ -34,6 +37,7 @@ patches:
       metadata:
         name: minecraft-server
       spec:
+        replicas: 0
         template:
           spec:
             volumes:

@@ -18,7 +18,8 @@ spec:
             name: extras
       containers:
         - name: minecraft-server
-          image: itzg/minecraft-server:2022.16.0
+          image: itzg/minecraft-server:2026.5.2
+          imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
                 name: minecraft-base-config

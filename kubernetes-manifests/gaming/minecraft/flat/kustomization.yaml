@@ -5,8 +5,11 @@ nameSuffix: -flat
 resources:
   - ../base-server
 
-commonLabels:
-  name: minecraft-server-flat
+labels:
+  - pairs:
+      name: minecraft-server-flat
+    includeSelectors: true
+    includeTemplates: true
 
 commonAnnotations:
   "mc-router.itzg.me/externalServerName": "flat.ms.lab.donat.im"
@@ -37,6 +40,7 @@ patches:
       metadata:
         name: minecraft-server
       spec:
+        replicas: 0
         template:
           spec:
             volumes:
