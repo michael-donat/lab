@@ -4,8 +4,9 @@ description: >
   Sweep email, Slack and calendar to open and close Mikey's day. Triages Gmail
   and Slack, captures the actionable bits as Linear tasks in Mikeys Desk (MDD),
   and posts one digest to his md-notes Slack channel (as the bot, so it notifies):
-  today's calendar and due items, the tasks just captured, what might need a
-  reply, and what is worth knowing. Runs morning and evening on a schedule, or on
+  today's calendar and due items, what's still pending (In Progress and Next),
+  the tasks just captured, what might need a reply, and what is worth knowing.
+  Runs morning and evening on a schedule, or on
   demand ("run my sweep", "start my day", "what came in", "close out my day").
   Do NOT use to add a single item (that is /pa:capture) or to answer a specific
   email or Slack thread.
@@ -131,6 +132,13 @@ exists, skip it. This keeps morning/evening runs and reruns idempotent.
 - **Evening:** **tomorrow's** calendar events (the next day; if tomorrow is the
   weekend, the next working day) so Mikey sees what is coming; plus anything due
   today still open.
+- **Both runs — pending backlog:** MDD issues assigned to me in status
+  `In Progress` and `Next` (active work and the actionable queue). Exclude
+  anything already listed as due/overdue above so nothing appears twice, and
+  exclude terminal states and `Reminders` (those surface via their due date).
+  Order `In Progress` first, then `Next`; within each, most recently updated
+  first. Cap at 7 items total; if more remain past the cap, add a `+N more` tail.
+  This is a reminder of what is open, not a full backlog dump: keep it tight.
 
 ## 5. Compose the digest (Slack mrkdwn)
 
@@ -157,6 +165,9 @@ block; show *Done today* / *Captured* only when they have items.
   (`../meeting-prep/SKILL.md`): attendees, the latest email/Slack thread link, and
   any agenda doc, 1 to 3 lines each. (Morning run only; the evening run just lists
   tomorrow's meetings without briefs.)
+- *Pending* — open work reminder: `In Progress` items first, then `Next`, capped
+  per §4 (title + Linear link, `+N more` if truncated). Show only when there are
+  items.
 - *Done today* — closed loops (title + link + how closed).
 - *Captured* — new tasks (title + Linear link + source).
 - *Might need a reply* — reply-needed threads not turned into tasks.
@@ -171,6 +182,8 @@ Header: 🌆 `*Evening sweep, {Weekday DD Mon}*`.
 
 - *Done today* — what closed (lead with this).
 - *Still open* — items due today not yet Done (only if any).
+- *Pending* — open work reminder: `In Progress` first, then `Next`, capped per §4
+  (only if any; exclude anything already under *Still open*).
 - *Captured* — new tasks from the working day (only if any).
 - *Tomorrow* — tomorrow's meetings with times, or `No meetings tomorrow`.
 - Email over the working day at the same detail (*Might need a reply* /
