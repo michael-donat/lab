@@ -1,0 +1,25 @@
+---
+# Source: zitadel/templates/configmap_login.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zitadel-login-config-dotenv
+  namespace: infra
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation
+    helm.sh/hook-weight: "0"
+  labels:
+    helm.sh/chart: zitadel-10.0.2
+    app.kubernetes.io/name: zitadel-login
+    app.kubernetes.io/instance: zitadel
+    app.kubernetes.io/version: "v4.14.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: login
+data:
+  .env: |-
+      ZITADEL_LOGINCLIENT_KEYFILE="/login-service-key/tls.key"
+      AUDIENCE="https://${ZITADEL_EXTERNALDOMAIN}"
+      ZITADEL_API_URL="http://zitadel:8080"
+      CUSTOM_REQUEST_HEADERS="Host:${ZITADEL_EXTERNALDOMAIN},X-Zitadel-Public-Host:${ZITADEL_EXTERNALDOMAIN}"
+

@@ -1,0 +1,63 @@
+---
+# Source: zitadel/templates/configmap_zitadel.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zitadel-config-yaml
+  namespace: infra
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation
+    helm.sh/hook-weight: "0"
+  labels:
+    helm.sh/chart: zitadel-10.0.2
+    app.kubernetes.io/name: zitadel
+    app.kubernetes.io/instance: zitadel
+    app.kubernetes.io/version: "v4.14.0"
+    app.kubernetes.io/managed-by: Helm
+data:
+  zitadel-config-yaml: |-
+    Database:
+      Postgres:
+        Admin:
+          SSL:
+            Mode: disable
+          Username: postgres
+        Database: zitadel
+        Host: postgres-internal
+        Port: 5432
+        User:
+          SSL:
+            Mode: disable
+          Username: zitadel
+    ExternalDomain: id.lab.donat.im
+    ExternalPort: 443
+    ExternalSecure: true
+    FirstInstance:
+      Org:
+        Machine:
+          Machine:
+            Name: Automatically Initialized IAM Admin
+            Username: iam-admin
+          MachineKey:
+            ExpirationDate: "2029-01-01T00:00:00Z"
+            Type: 1
+          Pat:
+            ExpirationDate: "2029-01-01T00:00:00Z"
+      Skip: false
+    Machine:
+      Identification:
+        Hostname:
+          Enabled: true
+        Webhook:
+          Enabled: false
+    SystemAPIUsers:
+      login-client:
+        Memberships:
+        - MemberType: System
+          Roles:
+          - IAM_LOGIN_CLIENT
+        Path: /secrets/login-client/tls.crt
+    TLS:
+      Enabled: false
+

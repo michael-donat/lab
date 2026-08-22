@@ -1,0 +1,82 @@
+---
+# Source: zitadel/templates/job_init.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "zitadel-init"
+  namespace: infra
+  labels:
+    helm.sh/chart: zitadel-10.0.2
+    app.kubernetes.io/name: zitadel
+    app.kubernetes.io/instance: zitadel
+    app.kubernetes.io/version: "v4.14.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: init
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation
+    helm.sh/hook-weight: "1"
+spec:
+  backoffLimit: 5
+  activeDeadlineSeconds: 300
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: zitadel-10.0.2
+        app.kubernetes.io/name: zitadel
+        app.kubernetes.io/instance: zitadel
+        app.kubernetes.io/version: "v4.14.0"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: init
+    spec:
+      serviceAccountName: zitadel
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      enableServiceLinks: false
+      restartPolicy: Never
+      containers:
+        - name: zitadel-init
+          securityContext:
+              privileged: false
+              readOnlyRootFilesystem: true
+              runAsNonRoot: true
+              runAsUser: 1000
+          image: "ghcr.io/zitadel/zitadel:v4.14.0"
+          imagePullPolicy: IfNotPresent
+          args:
+            - init
+            - --config
+            - /config/zitadel-config-yaml
+            - --config
+            - /zitadel-secrets-yaml/zitadel-secrets-yaml
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            - name: ZITADEL_DATABASE_POSTGRES_AWAITINITIALCONN
+              value: "5m"
+            
+          volumeMounts:
+          - name: zitadel-config-yaml
+            mountPath: /config
+            readOnly: true
+          - name: zitadel-secrets-yaml
+            mountPath: /zitadel-secrets-yaml
+            readOnly: true
+          resources:
+              {}
+      volumes:
+      - name: zitadel-config-yaml
+        configMap:
+          name: zitadel-config-yaml
+          defaultMode: 0440
+      - name: zitadel-secrets-yaml
+        secret:
+          secretName: zitadel-secrets-yaml
+          defaultMode: 0440
+
+

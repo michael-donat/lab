@@ -1,0 +1,34 @@
+---
+# Source: zitadel/templates/ingress_zitadel.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zitadel
+  namespace: infra
+  labels:
+    helm.sh/chart: zitadel-10.0.2
+    app.kubernetes.io/name: zitadel
+    app.kubernetes.io/instance: zitadel
+    app.kubernetes.io/version: "v4.14.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: le
+    traefik.ingress.kubernetes.io/router.tls.domains.0.main: lab.donat.im
+    traefik.ingress.kubernetes.io/router.tls.domains.0.sans: '*.lab.donat.im'
+    traefik.ingress.kubernetes.io/service.serversscheme: h2c
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: "id.lab.donat.im"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: zitadel
+                port:
+                  number: 8080
+

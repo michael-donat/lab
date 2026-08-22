@@ -9,6 +9,8 @@ resources:
   - ddns
   #- elasticsearch
   #- redpanda
-  #- postgres
+  - postgres
+  - spicedb
   - prometheus
   - grafana
+  - zitadel

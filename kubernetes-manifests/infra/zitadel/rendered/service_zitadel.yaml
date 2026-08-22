@@ -1,0 +1,28 @@
+---
+# Source: zitadel/templates/service_zitadel.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: zitadel
+  namespace: infra
+  annotations:
+    traefik.ingress.kubernetes.io/service.serversscheme: h2c
+  labels:
+    helm.sh/chart: zitadel-10.0.2
+    app.kubernetes.io/name: zitadel
+    app.kubernetes.io/instance: zitadel
+    app.kubernetes.io/version: "v4.14.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: http2-server
+      appProtocol: kubernetes.io/h2c
+  selector:
+    app.kubernetes.io/name: zitadel
+    app.kubernetes.io/instance: zitadel
+    app.kubernetes.io/component: start
+

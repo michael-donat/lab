@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spicedb-external
+  namespace: infra
+  labels:
+    name: spicedb-external
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: spicedb.lab.donat.im
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 50051
+      targetPort: grpc
+      name: grpc
+    - port: 8443
+      targetPort: http
+      name: http
+  selector:
+    name: spicedb

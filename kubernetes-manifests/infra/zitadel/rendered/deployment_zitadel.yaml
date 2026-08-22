@@ -1,0 +1,137 @@
+---
+# Source: zitadel/templates/deployment_zitadel.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zitadel
+  namespace: infra
+  labels:
+    helm.sh/chart: zitadel-10.0.2
+    app.kubernetes.io/name: zitadel
+    app.kubernetes.io/instance: zitadel
+    app.kubernetes.io/version: "v4.14.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: start
+spec:
+  revisionHistoryLimit: 10
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: zitadel
+      app.kubernetes.io/instance: zitadel
+      app.kubernetes.io/component: start
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: 28c2142a7828d92ac5057e87b53b6de6ca6b5bedb4ad66ea3b1627ee023d3cbb
+        checksum/secret-db-ssl-ca-crt: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+        checksum/secret-zitadel-secrets: a5dfe1f347f024f6ec7958685624d0b6be4bdb91b99e0a7e28d23809fe8f01a1
+        checksum/secret-login-service-key: 7e6fadb3fa13b81ceaed3e32678363fc2d24dfbd51350ccc8f166a4c0da49f63
+      labels:
+        helm.sh/chart: zitadel-10.0.2
+        app.kubernetes.io/name: zitadel
+        app.kubernetes.io/instance: zitadel
+        app.kubernetes.io/version: "v4.14.0"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: start
+    spec:
+      serviceAccountName: zitadel
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      enableServiceLinks: false
+      containers:
+        - name: "zitadel"
+          securityContext:
+              privileged: false
+              readOnlyRootFilesystem: true
+              runAsNonRoot: true
+              runAsUser: 1000
+          image: "ghcr.io/zitadel/zitadel:v4.14.0"
+          imagePullPolicy: IfNotPresent
+          args:
+            - start
+            - --config
+            - /config/zitadel-config-yaml
+            - --config
+            - /zitadel-secrets-yaml/zitadel-secrets-yaml
+            - --masterkeyFromEnv
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            - name: ZITADEL_MASTERKEY
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-masterkey
+                  key: masterkey
+            - name: ZITADEL_DATABASE_POSTGRES_AWAITINITIALCONN
+              value: "5m"
+            
+          ports:
+          - containerPort: 8080
+            name: http2-server
+            protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /debug/healthz
+              port: http2-server
+              httpHeaders:
+                - name: Host
+                  value: id.lab.donat.im
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /debug/ready
+              port: http2-server
+              httpHeaders:
+                - name: Host
+                  value: id.lab.donat.im
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 5
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /debug/ready
+              port: http2-server
+              httpHeaders:
+                - name: Host
+                  value: id.lab.donat.im
+              scheme: HTTP
+            periodSeconds: 1
+            failureThreshold: 30
+          volumeMounts:
+          - name: zitadel-config-yaml
+            mountPath: /config
+            readOnly: true
+          - name: zitadel-secrets-yaml
+            mountPath: /zitadel-secrets-yaml
+            readOnly: true
+          - name: login-service-key
+            mountPath: /secrets/login-client
+            readOnly: true
+          resources:
+              {}
+      volumes:
+      - name: zitadel-config-yaml
+        configMap:
+          name: zitadel-config-yaml
+      - name: zitadel-secrets-yaml
+        secret:
+          secretName: zitadel-secrets-yaml
+          defaultMode: 0440
+      - name: login-service-key
+        secret:
+          secretName: zitadel-login-service-key
+          defaultMode: 0440
+          items:
+            - key: tls.crt
+              path: tls.crt
+

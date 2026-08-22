@@ -1,0 +1,65 @@
+zitadel:
+  # 32-char lab-only masterkey
+  masterkey: "lab-zitadel-masterkey-do-not-use"
+  configmapConfig:
+    ExternalDomain: id.lab.donat.im
+    ExternalPort: 443
+    ExternalSecure: true
+    TLS:
+      Enabled: false
+    Database:
+      Postgres:
+        Host: postgres-internal
+        Port: 5432
+        Database: zitadel
+        User:
+          Username: zitadel
+          SSL:
+            Mode: disable
+        Admin:
+          Username: postgres
+          SSL:
+            Mode: disable
+  secretConfig:
+    Database:
+      Postgres:
+        User:
+          Password: zitadel
+        Admin:
+          Password: postgres
+
+# Login V2 — zitadel v4's console redirects to /ui/v2/login, served by this component.
+login:
+  enabled: true
+  # Route /ui/v2/login to the login pod. Separate ingress (not the zitadel one)
+  # because the login app speaks plain HTTP/1.1 — no h2c serversscheme here.
+  ingress:
+    enabled: true
+    className: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      traefik.ingress.kubernetes.io/router.tls: "true"
+      traefik.ingress.kubernetes.io/router.tls.certresolver: le
+      traefik.ingress.kubernetes.io/router.tls.domains.0.main: lab.donat.im
+      traefik.ingress.kubernetes.io/router.tls.domains.0.sans: "*.lab.donat.im"
+    hosts:
+      - host: id.lab.donat.im
+        paths:
+          - path: /ui/v2/login
+            pathType: Prefix
+
+ingress:
+  enabled: true
+  className: traefik
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: le
+    traefik.ingress.kubernetes.io/router.tls.domains.0.main: lab.donat.im
+    traefik.ingress.kubernetes.io/router.tls.domains.0.sans: "*.lab.donat.im"
+    traefik.ingress.kubernetes.io/service.serversscheme: h2c
+  hosts:
+    - host: id.lab.donat.im
+      paths:
+        - path: /
+          pathType: Prefix

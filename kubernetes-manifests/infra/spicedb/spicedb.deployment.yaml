@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spicedb
+  namespace: infra
+spec:
+  strategy:
+    type: Recreate
+  replicas: 0
+  selector:
+    matchLabels:
+      name: spicedb
+  template:
+    metadata:
+      labels:
+        name: spicedb
+    spec:
+      terminationGracePeriodSeconds: 10
+      initContainers:
+        - name: spicedb-migrate
+          image: authzed/spicedb:v1.52.0
+          args:
+            - migrate
+            - head
+            - --datastore-engine=postgres
+            - --datastore-conn-uri=postgres://postgres:postgres@postgres-internal:5432/spicedb?sslmode=disable
+      containers:
+        - name: spicedb
+          image: authzed/spicedb:v1.52.0
+          args:
+            - serve
+            - --grpc-preshared-key=
+            - --datastore-engine=postgres
+            - --datastore-conn-uri=postgres://postgres:postgres@postgres-internal:5432/spicedb?sslmode=disable
+          ports:
+            - name: grpc
+              containerPort: 50051
+            - name: http
+              containerPort: 8443
+            - name: metrics
+              containerPort: 9090
+          readinessProbe:
+            exec:
+              command:
+                - grpc_health_probe
+                - -addr=localhost:50051
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command:
+                - grpc_health_probe
+                - -addr=localhost:50051
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+            requests:
+              cpu: 250m
+              memory: 256Mi

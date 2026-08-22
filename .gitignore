@@ -3,3 +3,6 @@
 .idea
 .DS_Store
 /.claude/worktrees
+
+# Helm-rendered k8s Secrets — never commit rendered secret material
+kubernetes-manifests/**/rendered/secret_*.yaml

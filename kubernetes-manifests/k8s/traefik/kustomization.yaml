@@ -1,5 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: traefik
 resources:
   - traefik.namespace.yaml
   - traefik.serviceaccount.yaml
@@ -8,3 +9,8 @@ resources:
   - traefik.ingressclass.yaml
   - traefik.deployment.yaml
   - traefik.service.yaml
+
+# NOTE: the deployment expects a Secret `cloudflare-api-token` (key `cf-token`)
+# in this namespace for ACME DNS-01. It's created imperatively by copying the
+# external-dns token from infra (see README), not managed by this kustomization.
+# The token must have Zone:Read + DNS:Edit on donat.im.

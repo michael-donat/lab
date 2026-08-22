@@ -1,0 +1,34 @@
+---
+# Source: zitadel/templates/ingress_login.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zitadel-login
+  namespace: infra
+  labels:
+    helm.sh/chart: zitadel-10.0.2
+    app.kubernetes.io/name: zitadel-login
+    app.kubernetes.io/instance: zitadel
+    app.kubernetes.io/version: "v4.14.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: login
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: le
+    traefik.ingress.kubernetes.io/router.tls.domains.0.main: lab.donat.im
+    traefik.ingress.kubernetes.io/router.tls.domains.0.sans: '*.lab.donat.im'
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: "id.lab.donat.im"
+      http:
+        paths:
+          - path: /ui/v2/login
+            pathType: Prefix
+            backend:
+              service:
+                name: zitadel-login
+                port:
+                  number: 3000
+

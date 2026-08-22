@@ -14,6 +14,9 @@ spec:
     - name: http
       port: 80
       targetPort: http
+    - name: websecure
+      port: 443
+      targetPort: websecure
     - name: dashboard
       port: 8080
       targetPort: dashboard

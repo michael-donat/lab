@@ -1,0 +1,127 @@
+---
+# Source: zitadel/templates/deployment_login.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zitadel-login
+  namespace: infra
+  labels:
+    helm.sh/chart: zitadel-10.0.2
+    app.kubernetes.io/name: zitadel-login
+    app.kubernetes.io/instance: zitadel
+    app.kubernetes.io/version: "v4.14.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: login
+spec:
+  revisionHistoryLimit: 10
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: zitadel-login
+      app.kubernetes.io/instance: zitadel
+      app.kubernetes.io/component: login
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: 635d1cac755e88eedf2be6ed6918be7bdd9efd5cc0b5dcc9dcbb9ff3f30df799
+        checksum/secret-login-service-key: 33b1ddfea2f8263eace59f9330bec1f2120fe81ad30565c12623fa495d09673e
+      labels:
+        helm.sh/chart: zitadel-10.0.2
+        app.kubernetes.io/name: zitadel-login
+        app.kubernetes.io/instance: zitadel
+        app.kubernetes.io/version: "v4.14.0"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: login
+    spec:
+      serviceAccountName: zitadel-login
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      enableServiceLinks: false
+      containers:
+        - name: zitadel-login
+          securityContext:
+              privileged: false
+              readOnlyRootFilesystem: true
+              runAsNonRoot: true
+              runAsUser: 1000
+          image: "ghcr.io/zitadel/zitadel-login:v4.14.0"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: NEXT_PUBLIC_BASE_PATH
+              value: /ui/v2/login
+            - name: ZITADEL_EXTERNALDOMAIN
+              value: "id.lab.donat.im"
+          ports:
+          - containerPort: 3000
+            name: http-server
+            protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /ui/v2/login/healthy
+              port: http-server
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ui/v2/login/ready
+              port: http-server
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 5
+            failureThreshold: 3
+          volumeMounts:
+          - name: login-config-dotenv
+            mountPath: /.env-file/
+            readOnly: true
+          - name: login-service-key
+            mountPath: /login-service-key
+            readOnly: true
+          resources:
+              {}
+      initContainers:
+        # This initContainer acts as a dependency check, ensuring the Login UI pod
+        # does not start until the main Zitadel API is fully initialized and ready
+        # to serve traffic. It prevents a race condition where the UI might start,
+        # fail to connect to the backend, and enter an error state.
+        #
+        # It uses the `wait4x` tool to poll the Zitadel pod's readiness endpoint
+        # (`/debug/ready`). Startup is paused until this endpoint returns an HTTP 200
+        # OK status. The `--insecure-skip-tls-verify` flag is included to support
+        # environments that use self-signed certificates for internal TLS.
+        - name: wait-for-zitadel
+          image: docker.io/wait4x/wait4x:3.6
+          imagePullPolicy: 'IfNotPresent'
+          command:
+            - wait4x
+            - http
+            - http://zitadel:8080/debug/ready
+            - --insecure-skip-tls-verify
+            - --h2c
+            - --no-redirect
+            - --expect-status-code
+            - "200"
+            - --timeout
+            - "5m"
+            - --interval
+            - "5s"
+          securityContext:
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+      volumes:
+      - name: login-config-dotenv
+        configMap:
+          name: zitadel-login-config-dotenv
+      - name: login-service-key
+        secret:
+          secretName: zitadel-login-service-key
+          defaultMode: 0440
+          items:
+            - key: tls.key
+              path: tls.key
+

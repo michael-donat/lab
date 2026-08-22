@@ -15,6 +15,12 @@ spec:
     spec:
       serviceAccountName: traefik
       terminationGracePeriodSeconds: 10
+      volumes:
+        # Persist acme.json so issued certs survive restarts (avoids LE rate limits).
+        - name: acme
+          hostPath:
+            path: /kubernetes-volumes/traefik-acme
+            type: DirectoryOrCreate
       containers:
         - name: traefik
           image: traefik:v3.3
@@ -23,15 +29,39 @@ spec:
             - --providers.kubernetesingress.ingressclass=traefik
             - --providers.kubernetesingress.ingressendpoint.publishedservice=traefik/traefik
             - --entrypoints.web.address=:80
+            - --entrypoints.websecure.address=:443
+            # Let's Encrypt via Cloudflare DNS-01 (works behind private/metallb IPs).
+            - --certificatesresolvers.le.acme.email=michael.donat@me.com
+            - --certificatesresolvers.le.acme.storage=/data/acme.json
+            - --certificatesresolvers.le.acme.dnschallenge=true
+            - --certificatesresolvers.le.acme.dnschallenge.provider=cloudflare
+            # Our cluster can't reach the public authoritative NS (UniFi forced-DNS
+            # intercepts :53), so lego's self-check always NXDOMAINs. Skip it and let
+            # Let's Encrypt validate from the public internet, after a short delay
+            # for the record to propagate on Cloudflare.
+            - --certificatesresolvers.le.acme.dnschallenge.propagation.delaybeforechecks=20s
+            - --certificatesresolvers.le.acme.dnschallenge.propagation.disablechecks=true
             - --api.dashboard=true
             - --api.insecure=true
             - --ping=true
             - --log.level=INFO
+          env:
+            # DNS-01 needs Zone:Read + DNS:Edit on the donat.im zone.
+            - name: CF_DNS_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflare-api-token
+                  key: cf-token
           ports:
             - name: http
               containerPort: 80
+            - name: websecure
+              containerPort: 443
             - name: dashboard
               containerPort: 8080
+          volumeMounts:
+            - name: acme
+              mountPath: /data
           resources:
             limits:
               cpu: 200m
