@@ -1,0 +1,9 @@
+{
+  "name": "pa",
+  "version": "0.1.0",
+  "description": "Mikey's personal-assistant skills: capture to Linear (Mikeys Desk / MDD), the morning and evening sweep, and reminders. Skills auto-discovered from ./skills.",
+  "author": {
+    "name": "Mikey Donat",
+    "email": "mikey@road.io"
+  }
+}

@@ -1,15 +1,15 @@
 ---
-name: pa-nudge
+name: nudge
 description: >
   Deliver Mikey's due reminders to his Slack channel. Reads his personal list
   (Mikeys Desk / MDD) for reminder issues due today or overdue and posts one
   grouped message to his notification channel. Runs on a schedule (weekday
   mornings) and can be invoked manually ("check my reminders", "what's due").
-  Do NOT use to add reminders (that is pa-capture) or for the full morning brief
-  (that is pa-brief).
+  Do NOT use to add reminders (that is /pa:capture) or for the full morning brief
+  (that is /pa:sweep).
 ---
 
-# pa-nudge
+# nudge
 
 Surface time-based reminders from Mikey's list into Slack. Team ID and the Slack
 channel are in `../../config.md`.

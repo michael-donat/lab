@@ -1,5 +1,5 @@
 ---
-name: pa-sweep
+name: sweep
 description: >
   Sweep email, Slack and calendar to open and close Mikey's day. Triages Gmail
   and Slack, captures the actionable bits as Linear tasks in Mikeys Desk (MDD),
@@ -7,11 +7,11 @@ description: >
   today's calendar and due items, the tasks just captured, what might need a
   reply, and what is worth knowing. Runs morning and evening on a schedule, or on
   demand ("run my sweep", "start my day", "what came in", "close out my day").
-  Do NOT use to add a single item (that is pa-capture) or to answer a specific
+  Do NOT use to add a single item (that is /pa:capture) or to answer a specific
   email or Slack thread.
 ---
 
-# pa-sweep
+# sweep
 
 The spine of Mikey's day. It runs twice: a **morning** sweep to open the day and
 an **evening** sweep to close it. Each run: triage email and Slack, capture the
@@ -112,7 +112,7 @@ Decide, per email/Slack item, whether it is **work** (a task to track) or just
 
 - **Work** (a request to do/approve/decide, a promise to follow up, an
   investigation, anything that will not be done in the next two minutes) → create
-  a Linear issue following `pa-capture` conventions: team MDD, assigned to me, a
+  a Linear issue following the `/pa:capture` conventions: team MDD, assigned to me, a
   clean imperative title, the right label (`Follow-up` for promised replies,
   `Investigation`, `Task`, etc.), status `Next` (or `Reminders` + due date if it
   has a deadline), and **the source permalink / thread link in the description**.
@@ -199,5 +199,5 @@ Confirm the response has `"ok": true`. If false, report the error
 
 - Keep the digest skimmable. Reading it should BE the morning triage, not a
   second inbox.
-- This supersedes the road `mail-check` skill (inbox triage → DM). Once pa-sweep
+- This supersedes the road `mail-check` skill (inbox triage → DM). Once /pa:sweep
   is trusted, retire `mail-check` from engineering-ai to avoid a double ping.

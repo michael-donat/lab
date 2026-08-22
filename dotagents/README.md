@@ -3,69 +3,62 @@
 Personal Claude agent config, kept like dotfiles. Lives next to `../dotfiles`.
 
 This is **mine**, deliberately separate from the department-wide `engineering-ai`
-skill set (`road-*`). It ships as a Claude Code **plugin** named `pa` (personal
-assistant), in a single-plugin marketplace also called `dotagents`.
-
-## What it is
-
-A lightweight PA built on Claude Code + the MCPs already on my account
-(Linear, Gmail, Slack, Google Calendar). No new infra: skills + scheduled
-cloud routines.
-
-- **Store:** the private Linear team **Mikeys Desk** (`MDD`), items as issues,
-  categorised by label, moving through statuses. Reminders use due dates.
-- **Capture in:** `pa-capture` (single item), and `pa-sweep` (email/Slack sweep).
-- **Surface out:** `pa-sweep` posts a morning + evening digest to my md-notes
-  Slack channel; `pa-nudge` covers ad-hoc "what's due".
-- **Write as me:** `write-voice` for anything addressed to someone else.
+(`road-*`). It is a Claude Code **marketplace** (`dotagents`) that holds one
+plugin per domain. Today that is **`pa`** (personal assistant); more (e.g.
+`engineering`) will be sibling plugins.
 
 ## Layout
 
 ```
 dotagents/
-  .claude-plugin/
-    marketplace.json   marketplace "dotagents", listing the pa plugin
-    plugin.json        plugin "pa" (skills auto-discovered from ./skills)
-  skills/
-    pa-capture/  pa-sweep/  pa-nudge/  write-voice/
-  CLAUDE.md            personal global context (tone, STE, the list)
-  config.md            IDs (team/statuses/labels), Slack channel, timezone
-  install.sh           wires the CLAUDE.md import (+ legacy skill symlinks)
+  .claude-plugin/marketplace.json   marketplace "dotagents" (lists the plugins)
+  CLAUDE.md                         personal always-on context (imported globally)
+  tone-of-voice.md                  universal voice; imported by CLAUDE.md
+  install.sh                        wires the CLAUDE.md import; cleans legacy symlinks
+  plugins/
+    pa/
+      .claude-plugin/plugin.json
+      config.md                     IDs (team/statuses/labels), Slack channel, timezone
+      skills/  capture/  sweep/  nudge/
+    engineering/                    ← future sibling plugin
 ```
 
-## Install locally (plugin)
+## Two layers
+
+1. **Always-on personal context** (not a plugin): `CLAUDE.md` + `tone-of-voice.md`.
+   These carry how Claude talks to me (plain, STE for engineering) and my writing
+   voice. They load via a one-line import in `~/.claude/CLAUDE.md`, set by
+   `install.sh`. Plugins do not carry always-on context, so this stays separate.
+2. **Skills** (the plugin): `pa@dotagents`, invoked as `/pa:capture`, `/pa:sweep`,
+   `/pa:nudge`.
+
+## Install locally
 
 ```
 /plugin marketplace add ~/Development/lab/dotagents
 /plugin install pa@dotagents
+./install.sh          # adds the CLAUDE.md import, removes any legacy pa-* symlinks
 ```
 
-Skills then appear as `/pa:pa-capture`, `/pa:pa-sweep`, etc. After installing the
-plugin, remove the legacy symlinks so skills are not registered twice:
+## The tone of voice is universal, across surfaces
 
-```
-rm ~/.claude/skills/pa-capture ~/.claude/skills/pa-sweep ~/.claude/skills/pa-nudge ~/.claude/skills/write-voice
-```
-
-**Still run `./install.sh`** for the one thing the plugin does not carry: the
-personal global `CLAUDE.md` import into `~/.claude/CLAUDE.md` (tone, STE, the
-list). Plugins deliver skills, not always-on context.
+`tone-of-voice.md` is the single source. It is always-on in Claude Code via the
+`CLAUDE.md` import. Because claude.ai and the Claude app cannot read local files,
+paste the same file into **claude.ai → Settings → personal preferences** so the
+voice applies there and in Claude voice too. Re-paste when it changes.
 
 ## Cloud routines
 
-Scheduled routines (the morning/evening `pa-sweep`) are **Claude Code** cloud
-sessions, not claude.ai chats, so they load skills from a cloned repo's
+Scheduled routines (the morning/evening `sweep`) are **Claude Code** cloud
+sessions, not claude.ai chats. They load skills from a cloned repo's
 `.claude/settings.json`, not from `~/.claude/skills` and not from claude.ai
-uploads. The wiring lives in `../.claude/settings.json` (lab root): it registers
-the `dotagents` marketplace (git-subdir of this public repo) and enables
-`pa@dotagents`. A routine clones `lab`, enables the plugin, and its prompt just
-invokes `/pa:pa-sweep`.
+uploads. The wiring is in `../.claude/settings.json` (lab root): it registers the
+`dotagents` marketplace (git-subdir of this public repo) and enables `pa@dotagents`.
+A routine clones `lab`, enables the plugin, and its prompt invokes `/pa:sweep`.
+Requires this repo to be pushed to the public `lab` remote.
 
-**This requires `dotagents` to be pushed to the public `lab` repo.** Until then,
-the marketplace source cannot resolve.
+## Config and secrets
 
-## Config
-
-`config.md` holds workspace-specific IDs (committed on purpose, opaque, not
-secret). The Slack bot token is a **secret**, provided via the routine
+`plugins/pa/config.md` holds workspace-specific IDs (committed on purpose, opaque,
+not secret). The Slack bot token is a **secret**, provided via the routine
 environment, never committed.

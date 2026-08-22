@@ -1,5 +1,5 @@
 ---
-name: pa-capture
+name: capture
 description: >
   Capture something onto Mikey's personal list: a todo, a reminder, a thing to
   think about, a follow-up he promised, an investigation, a chore, and so on. Use
@@ -8,10 +8,10 @@ description: >
   Creates a Linear issue in his Mikeys Desk team (key MDD), assigned to him, with
   the right status and label, and a due date for reminders. Do NOT use for team
   work in other Linear teams/projects, or for reading the list back (that is
-  pa-brief).
+  /pa:sweep).
 ---
 
-# pa-capture
+# capture
 
 Turn a quick phrase into one well-formed issue on Mikey's personal list. Fast and
 low-friction, no interrogation. The list is the **Mikeys Desk** team (`MDD`), not
@@ -51,10 +51,10 @@ does not exist, use `Task` and say which label you would have used.
    genuinely torn between a reminder and a plain todo, ask one short question;
    otherwise pick.
 2. **Parse a due date** for reminders ("tomorrow", "Fri", "3pm", "next week").
-   Resolve to an absolute date using today's date from context. pa-nudge fires at
+   Resolve to an absolute date using today's date from context. Reminders fire at
    day granularity, so record a time in the title if it matters.
 3. **Write a clean title**: imperative, short, the "what". Keep the original
-   phrasing and any source link (e.g. a Slack permalink from pa-slack-sweep) in
+   phrasing and any source link (e.g. a Slack permalink from /pa:sweep) in
    the description.
 4. **Create the issue** with `save_issue`: team = MDD (`LIST_TEAM_ID`), assignee =
    me, the chosen status and label, due date if a reminder. Leave priority unset

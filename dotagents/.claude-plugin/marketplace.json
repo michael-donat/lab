@@ -10,8 +10,8 @@
   "plugins": [
     {
       "name": "pa",
-      "source": "./",
-      "description": "Personal assistant: capture to Linear, morning/evening sweep, reminders, and Mikey's writing voice."
+      "source": "./plugins/pa",
+      "description": "Personal assistant: capture to Linear (Mikeys Desk), the morning/evening sweep, and reminders."
     }
   ]
 }
