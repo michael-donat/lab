@@ -152,7 +152,11 @@ Header: 🌅 `*Morning sweep, {Weekday DD Mon}*`. Always show *Today* and the em
 block; show *Done today* / *Captured* only when they have items.
 
 - *Today* — calendar events (with times) and anything due today, or
-  `No calendar events today`.
+  `No calendar events today`. For each **real** meeting (skip all-day, personal,
+  focus/OOO and blocks), add a compact pre-brief per the meeting-prep skill
+  (`../meeting-prep/SKILL.md`): attendees, the latest email/Slack thread link, and
+  any agenda doc, 1 to 3 lines each. (Morning run only; the evening run just lists
+  tomorrow's meetings without briefs.)
 - *Done today* — closed loops (title + link + how closed).
 - *Captured* — new tasks (title + Linear link + source).
 - *Might need a reply* — reply-needed threads not turned into tasks.
