@@ -1,0 +1,14 @@
+{
+  "extraKnownMarketplaces": {
+    "dotagents": {
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/michael-donat/lab",
+        "path": "dotagents"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "pa@dotagents": true
+  }
+}

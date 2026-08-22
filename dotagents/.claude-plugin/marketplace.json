@@ -1,0 +1,17 @@
+{
+  "name": "dotagents",
+  "owner": {
+    "name": "Mikey Donat",
+    "email": "mikey@road.io"
+  },
+  "metadata": {
+    "description": "Mikey's personal agent config: dotfiles for agents."
+  },
+  "plugins": [
+    {
+      "name": "pa",
+      "source": "./",
+      "description": "Personal assistant: capture to Linear, morning/evening sweep, reminders, and Mikey's writing voice."
+    }
+  ]
+}
