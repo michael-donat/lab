@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "pa",
-      "source": "./plugins/pa",
+      "source": "./dotagents/plugins/pa",
       "description": "Personal assistant: capture to Linear (Mikeys Desk), the morning/evening sweep, and reminders."
     }
   ]

@@ -9,18 +9,23 @@ plugin per domain. Today that is **`pa`** (personal assistant); more (e.g.
 
 ## Layout
 
+The marketplace manifest lives at the **lab repo root** so `michael-donat/lab`
+resolves it directly (one manifest, no subfolder path):
+
 ```
-dotagents/
-  .claude-plugin/marketplace.json   marketplace "dotagents" (lists the plugins)
-  CLAUDE.md                         personal always-on context (imported globally)
-  tone-of-voice.md                  universal voice; imported by CLAUDE.md
-  install.sh                        wires the CLAUDE.md import; cleans legacy symlinks
-  plugins/
-    pa/
-      .claude-plugin/plugin.json
-      config.md                     IDs (team/statuses/labels), Slack channel, timezone
-      skills/  capture/  sweep/  nudge/
-    engineering/                    ← future sibling plugin
+lab/                                (repo root; also holds dotfiles, k8s, ...)
+  .claude-plugin/marketplace.json   marketplace "dotagents" -> plugin pa
+  .claude/settings.json             routine wiring (enables pa@dotagents)
+  dotagents/
+    CLAUDE.md                       personal always-on context (imported globally)
+    tone-of-voice.md                universal voice; imported by CLAUDE.md
+    install.sh                      wires the CLAUDE.md import; cleans legacy symlinks
+    plugins/
+      pa/
+        .claude-plugin/plugin.json
+        config.md                   IDs (team/statuses/labels), Slack channel, timezone
+        skills/  capture/  sweep/  nudge/
+      engineering/                  <- future sibling plugin
 ```
 
 ## Two layers
@@ -35,10 +40,13 @@ dotagents/
 ## Install locally
 
 ```
-/plugin marketplace add ~/Development/lab/dotagents
+/plugin marketplace add ~/Development/lab
 /plugin install pa@dotagents
 ./install.sh          # adds the CLAUDE.md import, removes any legacy pa-* symlinks
 ```
+
+On claude.ai (web/app), add the same marketplace under **Settings -> Plugins ->
+Add -> Add marketplace** with repo `michael-donat/lab`, then enable `pa`.
 
 ## The tone of voice is universal, across surfaces
 
@@ -53,7 +61,7 @@ Scheduled routines (the morning/evening `sweep`) are **Claude Code** cloud
 sessions, not claude.ai chats. They load skills from a cloned repo's
 `.claude/settings.json`, not from `~/.claude/skills` and not from claude.ai
 uploads. The wiring is in `../.claude/settings.json` (lab root): it registers the
-`dotagents` marketplace (git-subdir of this public repo) and enables `pa@dotagents`.
+`dotagents` marketplace (`github: michael-donat/lab`) and enables `pa@dotagents`.
 A routine clones `lab`, enables the plugin, and its prompt invokes `/pa:sweep`.
 Requires this repo to be pushed to the public `lab` remote.
 
