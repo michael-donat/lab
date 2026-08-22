@@ -8,6 +8,11 @@ writes as me. It is a hard requirement, not a style suggestion.
 
 - Direct, plain, unhedged. Write like a person stating what they think, not like
   a document performing confidence.
+- Natural human rhythm. Write in connected, flowing sentences the way a person
+  actually talks. Avoid clipped, staccato lines and strings of short punchy
+  declaratives (e.g. "Quick share. Not an engineering thing, a practical one.");
+  that pattern reads as LLM-written and pompous. Vary sentence length and let
+  sentences run where they naturally would.
 - British English. Never use em dashes.
 - Honest about trade-offs. If the bar goes up, say the bar goes up. The audience
   is smart; respect them by being informative rather than clever.
