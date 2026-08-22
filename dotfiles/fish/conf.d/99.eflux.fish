@@ -40,6 +40,23 @@ function mirror_mngo
     k port-forward --context=gke_eflux-production_europe-west3_platform --namespace=tools svc/mongo-for-mirror 27317:27017
 end
 
+function _eflux_mongosh --description 'mongosh inside the mongodb-0 pod of a cluster'
+    set -l context $argv[1]
+    set -l database $argv[2]
+    set -e argv[1..2]
+
+    k exec --context=$context --namespace=infra -it mongodb-0 -- \
+        mongosh "mongodb://localhost/$database?replicaSet=eflux&readPreference=secondary" $argv
+end
+
+function prod_mongosh --description 'mongosh into production eflux_production (secondary read)'
+    _eflux_mongosh gke_eflux-production_europe-west3_platform eflux_production $argv
+end
+
+function stage_mongosh --description 'mongosh into staging eflux (secondary read)'
+    _eflux_mongosh gke_eflux-staging_europe-west3_platform eflux $argv
+end
+
 function prod_switch
     cd /Users/mikey/Development/e-flux/e-flux && bedrock cloud authorize production
 end
@@ -50,14 +67,14 @@ end
 
 function eapi
 	cd /Users/mikey/Development/e-flux/e-flux/services/api
-	yarn install
-	yarn start
+	pnpm install
+	pnpm run start | tee /tmp/dev.api.log
 end
 
 function eweb
 	cd /Users/mikey/Development/e-flux/e-flux/services/web
-	yarn install
-	yarn start
+	pnpm install
+	pnpm run start
 end
 
 function ekube
@@ -94,4 +111,24 @@ function show_config
     printf '%20s => %s\n' MONGO_OCPP_URI $MONGO_OCPP_URI
 
     echo
+end
+
+function elog --description 'Tail dev.api.log and extract codes + reset URLs'
+    set -l logfile /tmp/dev.api.log
+    test (count $argv) -gt 0; and set logfile $argv[1]
+
+    tail -f $logfile | perl -nle '
+        BEGIN { $| = 1 }
+        if (/(?:<code[^>]*>|code is:\s*)(\d{6})/) {
+            print $1;
+        } elsif (/<a\s[^>]*?href=\S*?(https?:[^"\s]+[A-Za-z0-9])[^>]*>(.*?)<\/a>/) {
+            my ($url, $txt) = ($1, $2);
+            $url =~ s/&#x([0-9a-fA-F]+);/chr(hex($1))/ge;
+            $url =~ s/&#(\d+);/chr($1)/ge;
+            $url =~ s/&amp;/&/g;
+            $url =~ s{^https://localhost}{http://localhost};
+            $txt =~ s/^\s+|\s+$//g;
+            print "$txt - $url";
+        }
+    '
 end
