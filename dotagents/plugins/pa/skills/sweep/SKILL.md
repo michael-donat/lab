@@ -124,45 +124,53 @@ Decide, per email/Slack item, whether it is **work** (a task to track) or just
 description already contains that Slack permalink or Gmail thread link; if one
 exists, skip it. This keeps morning/evening runs and reruns idempotent.
 
-## 4. Today's picture
+## 4. The day's picture
 
-- **Calendar:** list today's events on the primary calendar (with times).
-- **Due today:** query MDD for issues assigned to me with a due date on or before
-  today, not in a terminal status.
+- **Morning:** today's Google Calendar events (primary calendar, Europe/London)
+  with times; and MDD issues assigned to me due on or before today, not terminal.
+- **Evening:** **tomorrow's** calendar events (the next day; if tomorrow is the
+  weekend, the next working day) so Mikey sees what is coming; plus anything due
+  today still open.
 
 ## 5. Compose the digest (Slack mrkdwn)
 
-One message. `*bold*` single asterisks, `•` bullets. Drop any heading with no
-items. Lead with any critical-tool payment failure **before** the headings. Email
-links use `<https://mail.google.com/mail/u/0/#inbox/{message_id}|Open>`; Slack and
-Linear items link to their permalink / issue URL.
+One message. `*bold*` single asterisks, `•` bullets. Email links use
+`<https://mail.google.com/mail/u/0/#inbox/{message_id}|Open>`; Slack and Linear
+items link to their permalink / issue URL. Lead with any critical-tool payment
+failure before the headings. One line per item: who, what, what it needs, date,
+read state, link.
 
-```
-🌅 *Morning sweep, {Weekday DD Mon}*        (evening run: 🌆 *Evening sweep, ...*)
+**Never be silent about email or calendar.** Even when clear, confirm they were
+checked: if no email items qualify, show `No significant emails since the last
+sweep` (evening: `since the morning sweep`); if no calendar items, show
+`No calendar events today` (evening: `No meetings tomorrow`). So even a completely
+quiet run still posts the header plus those two confirmation lines.
 
-*Today*
-• {HH:MM} {event}  /  due: {task} <{linear_url}|Open>
+### Morning (open the day) — full mail-check-level email detail
 
-*Done today*                                  (evening especially; closed loops)
-• {task title} <{linear_url}|Open>  ✓ replied / resolved
+Header: 🌅 `*Morning sweep, {Weekday DD Mon}*`. Always show *Today* and the email
+block; show *Done today* / *Captured* only when they have items.
 
-*Captured*
-• {task title} <{linear_url}|Open>  (from {source} <{source_url}|src>)
+- *Today* — calendar events (with times) and anything due today, or
+  `No calendar events today`.
+- *Done today* — closed loops (title + link + how closed).
+- *Captured* — new tasks (title + Linear link + source).
+- *Might need a reply* — reply-needed threads not turned into tasks.
+- *Requests / notifications* — asks, with any deadline.
+- *Worth knowing* — external-partner FYIs and context (err towards including).
+- If those three email sections are all empty, show one line
+  `No significant emails since the last sweep`.
 
-*Might need a reply*
-• {sender}, {subject} ({DD Mon, HH:MM}, {Read/Unread}): what it needs. <…|Open>
+### Evening (close the day)
 
-*Requests / notifications*
-• {sender}, {subject} ({DD Mon, HH:MM}, {Read/Unread}): the action + any deadline. <…|Open>
+Header: 🌆 `*Evening sweep, {Weekday DD Mon}*`.
 
-*Worth knowing*
-• {sender or thread}, {subject} ({DD Mon, HH:MM}, {Read/Unread}): the context. <…|Open>
-```
-
-One line per item: who, what, what it needs, date, read state, link. If nothing
-qualifies across every section and nothing is due, the message is the single line
-`Nothing needs you this {morning/evening}.` The evening run also notes anything
-due today still not `Done`.
+- *Done today* — what closed (lead with this).
+- *Still open* — items due today not yet Done (only if any).
+- *Captured* — new tasks from the working day (only if any).
+- *Tomorrow* — tomorrow's meetings with times, or `No meetings tomorrow`.
+- Email over the working day at the same detail (*Might need a reply* /
+  *Requests* / *Worth knowing*), or `No significant emails since the morning sweep`.
 
 ## 6. Deliver (post as the bot so it notifies)
 
