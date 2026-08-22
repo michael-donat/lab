@@ -182,7 +182,7 @@ environment (never hardcode the token; it is a secret and must not be in the rep
 python3 - <<'PY'
 import json, os, urllib.request
 text = open('/tmp/pa-sweep.txt').read()   # write the composed message here first
-payload = json.dumps({"channel": "C0BK1KF8LCQ", "text": text}).encode()
+payload = json.dumps({"channel": "C0BK1KF8LCQ", "text": text, "unfurl_links": False, "unfurl_media": False}).encode()
 req = urllib.request.Request(
     "https://slack.com/api/chat.postMessage",
     data=payload,
