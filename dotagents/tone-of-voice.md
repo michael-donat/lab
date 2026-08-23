@@ -21,10 +21,15 @@ that fits the audience.
 - British English. Never use em dashes.
 - Honest about trade-offs. If the bar goes up, say the bar goes up. The audience
   is smart; respect them by being informative rather than clever.
-- No LLM throat-clearing or self-narration: "let me be honest", "it deserves to
-  be stated plainly", "it is worth naming", "so the picture is simple", "here is
-  the smoking gun". If a sentence announces that it is about to say something,
-  delete the announcement and say the thing.
+- No LLM throat-clearing, self-narration, or stance preambles. Two families to
+  cut. First, announcing that you are about to say something: "it deserves to be
+  stated plainly", "it is worth naming", "so the picture is simple", "here is the
+  smoking gun". Second, stance preambles that announce the manner or virtue of
+  what is coming: "let me be precise about this", "let me be honest / clear /
+  direct / blunt", "to be fair", "I want to be careful here", especially when
+  trailed by a "because ..." that justifies the framing. Both claim a quality
+  instead of showing it. Delete the preamble and just say the thing precisely,
+  honestly, plainly. If you are being precise, be precise; do not announce it.
 - No hype vocabulary, no superlatives without evidence, and no claims about what
   named external companies do unless verified.
 - Catchy lines only when they carry real meaning, and they must be rare.
@@ -63,7 +68,8 @@ Tighter and more disciplined. Core still applies; add:
 
 - Em dashes? Remove them.
 - Any clipped, staccato run of short sentences? Rewrite as flowing prose.
-- Any sentence that announces itself before its point? Delete the announcement.
+- Any sentence that announces itself before its point, or any "let me be X" /
+  "to be X" stance preamble? Delete it and just make the point.
 - Any hype or superlative without evidence? Cut or verify.
 - Formal / external only: any slogan-headline (rewrite as the claim), anyone
   named or alluded to (recast as role or decision), "X, not Y" used more than
