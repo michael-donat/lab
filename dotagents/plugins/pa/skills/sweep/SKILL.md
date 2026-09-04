@@ -5,7 +5,8 @@ description: >
   and Slack, captures the actionable bits as Linear tasks in Mikeys Desk (MDD),
   and posts one digest to his md-notes Slack channel (as the bot, so it notifies):
   today's calendar and due items, what's still pending (In Progress and Next),
-  the tasks just captured, what might need a reply, and what is worth knowing.
+  open ERE-board cards needing me, the tasks just captured, what might need a
+  reply, and what is worth knowing.
   Runs morning and evening on a schedule, or on
   demand ("run my sweep", "start my day", "what came in", "close out my day").
   Do NOT use to add a single item (that is /pa:capture) or to answer a specific
@@ -19,15 +20,18 @@ an **evening** sweep to close it. Each run: triage email and Slack, capture the
 actionable bits to Linear, build today's picture, then post one digest.
 
 IDs and the channel are in `../../config.md` (`LIST_TEAM_ID` = MDD,
-`SLACK_NOTIFY_CHANNEL` = `C0BK1KF8LCQ`, `SLACK_HANDLE`, `CAPTURE_EMOJI` = `:ack:`).
+`ERE_TEAM_ID` = the ERE board, `SLACK_NOTIFY_CHANNEL` = `C0BK1KF8LCQ`,
+`SLACK_HANDLE`, `CAPTURE_EMOJI` = `:ack:`).
 
 ## What this run may and may not do
 
-- **May:** read Gmail, read Slack, read the calendar, create/read Linear issues,
-  and post the single digest to `SLACK_NOTIFY_CHANNEL`.
+- **May:** read Gmail, read Slack, read the calendar, create/read Linear issues in
+  MDD, **read** the ERE board, and post the single digest to `SLACK_NOTIFY_CHANNEL`.
 - **May NOT:** reply to, delete, label, or forward any email; post to Slack
-  anywhere else; reply in threads. On a scheduled run, never wait for a reply or
-  ask questions: capture, post, finish.
+  anywhere else; reply in threads; **write to the ERE board** (create or edit any
+  ERE card — that is the `ere-board-sync` skill, run separately with my
+  confirmation). On a scheduled run, never wait for a reply or ask questions:
+  capture, post, finish.
 
 ## Ground rules
 
@@ -140,6 +144,33 @@ exists, skip it. This keeps morning/evening runs and reruns idempotent.
   first. Cap at 7 items total; if more remain past the cap, add a `+N more` tail.
   This is a reminder of what is open, not a full backlog dump: keep it tight.
 
+## 4a. ERE board check (read-only)
+
+The ERE board (Linear team `ERE_TEAM_ID` / key `ERE` in `../../config.md`) registers
+third-party requests to reach charging data, one card per
+`<provider> - <private label>` pairing. The sweep only reads it and surfaces what
+needs me. The full reconcile, with card writes, is the `ere-board-sync` skill:
+never run its writes from a scheduled sweep.
+
+1. `list_issues` on team `ERE` with fields `title`, `status`, `updatedAt`, `url`
+   (add `description` for the cards you keep). Exclude terminal states (`Live`,
+   `Duplicate`, `Canceled`).
+2. Bucket the open cards by the config's status guide:
+   - **Needs my input** — the ball is with me: cards in `Action needed`; cards at
+     `PL Approval Received` waiting on us to issue credentials; any card with an
+     open defect an integrator reported that needs my call. These lead the ERE
+     section.
+   - **Owned by others / lower** — not mine to move: legal or T&Cs approval,
+     commercial `Blocked` items, steps sitting with the provider or another team.
+     One quiet line, or fold into a `+N more`. Never let these crowd out the first
+     bucket.
+3. Flag staleness, do not reconcile. From the email already swept this run, note
+   any ERE-provider thread whose newest message postdates its card's `updatedAt`,
+   or that matches no card at all. Do not classify or rewrite anything: add one
+   line only — `N ERE threads since the last sweep, board may need a sync
+   (/ere-board-sync)` — so I know to run the real reconcile. ERE-provider threads
+   counted here are not also surfaced in the general email sections (§1).
+
 ## 5. Compose the digest (Slack mrkdwn)
 
 One message. `*bold*` single asterisks, `•` bullets. Email links use
@@ -168,6 +199,10 @@ block; show *Done today* / *Captured* only when they have items.
 - *Pending* — open work reminder: `In Progress` items first, then `Next`, capped
   per §4 (title + Linear link, `+N more` if truncated). Show only when there are
   items.
+- *ERE* — per §4a: needs-my-input cards first (title + Linear link + one line on
+  what it needs), then at most one *owned by others* line, then the staleness flag
+  if any ERE mail arrived. Show the section only when a card needs me or ERE mail
+  arrived; otherwise omit it entirely.
 - *Done today* — closed loops (title + link + how closed).
 - *Captured* — new tasks (title + Linear link + source).
 - *Might need a reply* — reply-needed threads not turned into tasks.
@@ -184,6 +219,8 @@ Header: 🌆 `*Evening sweep, {Weekday DD Mon}*`.
 - *Still open* — items due today not yet Done (only if any).
 - *Pending* — open work reminder: `In Progress` first, then `Next`, capped per §4
   (only if any; exclude anything already under *Still open*).
+- *ERE* — per §4a: needs-my-input cards, one *owned by others* line, and the
+  staleness flag if ERE mail arrived over the working day. Only if any.
 - *Captured* — new tasks from the working day (only if any).
 - *Tomorrow* — tomorrow's meetings with times, or `No meetings tomorrow`.
 - Email over the working day at the same detail (*Might need a reply* /

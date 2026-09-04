@@ -23,6 +23,27 @@ Statuses (workflow states), with IDs for reliable transitions:
 - `Canceled` — `c4791c19-85f3-4d80-8c55-c6ac32c0ce7f`
 - `Duplicate` — `fe1aefdc-4c18-4a6a-8fde-332effd5e343`
 
+## The ERE board (Linear)
+
+A separate team the sweep reads (never writes). The ERE board registers
+third-party requests to reach charging data, one card per
+`<provider> - <private label>` pairing. The full reconcile with card writes is the
+`ere-board-sync` skill; the sweep only surfaces open cards that need me plus a
+"may need a sync" flag.
+
+- `ERE_TEAM_ID`: `20aebcef-216b-4210-8ce9-ae5c9cfbc82e`   # ERE
+- `ERE_TEAM_KEY`: `ERE`
+
+Status ladder (names drift, so match on meaning; happy path
+`Initial Contact` → `Engaged` → `PL Approval Received` → `Credentials Shared` →
+`Live`, plus off-path `Action needed`, `Blocked`, `Duplicate`, `Canceled`):
+- **Needs my input** (surface first): `Action needed`; cards at
+  `PL Approval Received` waiting on us to issue credentials; any card with an open
+  defect reported by an integrator that needs my call.
+- **Owned by others / lower**: legal or T&Cs approval, commercial `Blocked`
+  items, steps sitting with the provider or another team. One quiet line.
+- **Terminal** (never surface): `Live`, `Duplicate`, `Canceled`.
+
 ## Slack
 
 - `SLACK_NOTIFY_CHANNEL`: `C0BK1KF8LCQ`   # my personal notification channel;
