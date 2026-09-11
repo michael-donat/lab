@@ -97,6 +97,8 @@ message id (for the link).
   statements, auto-generated meeting notes).
 - Bounce / delivery-failure notices (mailer-daemon). If there is an unexpected
   large burst, add a single "worth knowing" line rather than one per bounce.
+- Anthropic requests to raise usage limits or add connectors: these are handled
+  elsewhere, so never flag or capture them.
 
 ## 2. Slack triage
 
@@ -109,6 +111,10 @@ Cover three sources over the window:
 For each, drop it if he has already replied or it is resolved. A direct ask he
 has not answered stands. Group chatter into threads; judge the thread, not each
 line.
+
+**Ignore `#it-requests`.** That channel is already handled by IT triage, so skip
+anything from it, even a mention of `SLACK_HANDLE` there. Never capture it or
+surface it in the digest.
 
 ## 3. Capture the actionable bits → Linear
 
