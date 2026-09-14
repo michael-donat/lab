@@ -2,9 +2,10 @@
 #   ta            picker: preview panes, go (enter), kill (ctrl-x), detach clients (ctrl-d)
 #   ta cc-eflux   go to that one directly
 # `●` = a client is attached, `·` = detached.
-# Enter does the right thing for where you are: from a plain prompt it `-CC attach`s;
-# from inside a tmux session (e.g. an iTerm split, which is a tmux pane) it `switch-client`s,
-# which retargets your current client to that session instead of nesting.
+# Enter does the right thing for where you are: from a plain prompt it attaches
+# inline in the current pane; from inside a tmux session (e.g. an iTerm split, which
+# is a tmux pane) it `switch-client`s, which retargets your current client to that
+# session instead of nesting.
 function ta --description 'tmux session manager: preview / switch / kill via fzf'
     set -l tab (printf '\t')
     set -l name
@@ -31,9 +32,11 @@ function ta --description 'tmux session manager: preview / switch / kill via fzf
     if set -q TMUX
         tmux switch-client -t $name
     else
-        # `exec` so tmux replaces this shell: on detach the gateway tab closes
-        # instead of lingering at a prompt. The session keeps running; rerun `ta`.
-        exec tmux -CC attach -t $name
+        # Plain attach (no -CC) so the session renders inline in this pane instead
+        # of iTerm control mode spawning its own native windows. `exec` so tmux
+        # replaces this shell: on detach the pane closes instead of lingering at a
+        # prompt. The session keeps running; rerun `ta`.
+        exec tmux attach -t $name
     end
 end
 
