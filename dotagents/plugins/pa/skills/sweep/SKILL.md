@@ -75,7 +75,8 @@ message id (for the link).
 **Flag (include):**
 - External threads that look like they are waiting on a reply from me.
 - Notifications or requests asking me to do, send, approve, or decide something,
-  including invoice-approval tasks addressed to me (e.g. Yooz): always surface.
+  including invoice-approval tasks addressed to me (e.g. Yooz): always surface in
+  the digest. Invoice approvals are digest-only, never captured as a task (§3).
 - Direct replies to emails I have sent.
 - Payment or billing failures for critical tools/infra (e.g. Cloudflare, GitHub,
   Google Cloud Platform, Checkly, incident.io). Surface these **first, at the
@@ -130,6 +131,8 @@ Decide, per email/Slack item, whether it is **work** (a task to track) or just
 - **Reply-needed but quick** → leave in the digest under "Might need a reply", do
   not make a task.
 - **FYI** → digest only, under "Worth knowing".
+- **Invoice approvals (e.g. Yooz)** → never a task. Mention them in the digest
+  under "Requests / notifications" and move on.
 
 **Do not duplicate.** Before creating, check for an open MDD issue whose
 description already contains that Slack permalink or Gmail thread link; if one
