@@ -100,6 +100,11 @@ message id (for the link).
   large burst, add a single "worth knowing" line rather than one per bounce.
 - Anthropic requests to raise usage limits or add connectors: these are handled
   elsewhere, so never flag or capture them.
+- Flight and hotel booking confirmations (including forwards): never flag or
+  capture them individually. Instead, count those whose booking reference is not
+  yet in the calendar and add one *Worth knowing* line:
+  `N new bookings not in your calendar, run /pa:travel`. Never write to the
+  calendar from the sweep.
 
 ## 2. Slack triage
 
