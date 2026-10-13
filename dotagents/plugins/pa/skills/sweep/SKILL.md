@@ -206,14 +206,19 @@ section entirely.
 
 ## 5. Compose the digest (Slack mrkdwn)
 
-One message. `*bold*` single asterisks, `•` bullets. Email links use
+One message. `*bold*` single asterisks. Every digest line is a numbered line
+(`1.`, `2.`, never a bullet with a number inside it). Email links use
 `<https://mail.google.com/mail/u/0/#inbox/{message_id}|Open>`; Slack items link to
 their permalink. Lead with any critical-tool payment failure before the headings.
 One line per item: who, what, what it needs, date, read state, link.
 
-**Number every item** that I might want to clear (everything except calendar
-events and meeting briefs), continuing the numbering across sections, so I can
-reply in the thread with the numbers. End the message with one line:
+**Number every line** (meetings, due items, the ERE line and every email item),
+starting at 1 and continuing across sections with no gaps, so I can reply in the
+thread with the numbers. The number replaces the bullet: write `1. 08:00 ...`, not
+`• 1. ...`. A meeting's `↳` pre-brief belongs to its meeting and is not numbered,
+and the `No significant emails` and `No meetings` confirmation lines are not
+numbered. Replies about a numbered line with no source link (a meeting) are
+ignored in §0. End the message with one line:
 `Reply in thread with numbers to clear items (e.g. "3 sorted").`
 
 **Never be silent about email or calendar.** Even when clear, confirm they were
@@ -228,7 +233,9 @@ Header: 🌅 `*Morning sweep, {Weekday DD Mon}*`. Always show *Today* and the em
 block; show other sections only when they have items.
 
 - *Today*: every calendar event with its time, and anything due today (a card with
-  a hard date, linked to its source). For each **real** meeting (skip all-day,
+  a hard date). Link a due item to the **source** in the card's description (the
+  Gmail thread or Slack message), with the Linear card as a secondary link after
+  it. For each **real** meeting (skip all-day,
   personal, focus/OOO and blocks), add a compact pre-brief per the meeting-prep
   skill (`../meeting-prep/SKILL.md`): attendees, the latest email/Slack thread
   link, and any agenda doc, 1 to 3 lines each. Pre-briefs are kept as they are.

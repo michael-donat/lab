@@ -1,6 +1,6 @@
 {
   "name": "pa",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Mikey's personal-assistant skills: capture to Linear (Mikeys Desk / MDD), the morning and evening sweep, reminders, the Friday weekly review, per-meeting prep, and flight/hotel bookings into the calendar. Skills auto-discovered from ./skills.",
   "author": {
     "name": "Mikey Donat",
