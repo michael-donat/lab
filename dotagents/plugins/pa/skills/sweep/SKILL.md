@@ -127,6 +127,11 @@ its message id (for the link).
 - Bounce / delivery-failure notices (mailer-daemon). If there is an unexpected
   large burst, add a single "worth knowing" line rather than one per bounce.
 - ERE-provider threads: counted in the single ERE line (§4a), never listed here.
+- Flight and hotel booking confirmations (including forwards): never flag or
+  capture them individually. Instead, count those whose booking reference is not
+  yet in the calendar and add one *Worth knowing* line:
+  `N new bookings not in your calendar, run /pa:travel`. Never write to the
+  calendar from the sweep.
 
 ## 2. Slack triage
 
